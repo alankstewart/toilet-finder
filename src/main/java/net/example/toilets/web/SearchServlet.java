@@ -1,12 +1,13 @@
 package net.example.toilets.web;
 
-import com.google.gson.Gson;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 import net.example.toilets.store.ToiletQuery;
 import net.example.toilets.store.ToiletStore;
 import net.example.toilets.store.ToiletStoreImpl;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collector;
 
 import static java.time.Duration.between;
 import static java.time.LocalDateTime.now;
@@ -47,7 +49,7 @@ public class SearchServlet extends HttpServlet {
         LocalDateTime start = now();
         store = new ToiletStoreImpl();
         store.initialise(xml);
-        log("Store initialised in " + between(start, now()).toMillis() + "ms");
+        log("Store initialised in " + between(start, now()).toMillis() + " ms");
     }
 
     @Override
@@ -63,10 +65,7 @@ public class SearchServlet extends HttpServlet {
         LocalDateTime start = now();
         List<Toilet> results = store.search(query);
         log("Search: " + query + " took " + between(start, now()).toMillis() + "ms");
-
-        Gson gson = new Gson();
-        resp.getOutputStream().print(gson.toJson(results));
-        resp.getOutputStream().flush();
+        write(resp, results);
     }
 
     private double getAsDouble(String str) throws ServletException {
@@ -75,5 +74,29 @@ public class SearchServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             throw new ServletException("Failed to parse string as double '" + str + "'");
         }
+    }
+
+    private void write(HttpServletResponse resp, List<Toilet> results) throws IOException {
+        Json.createWriter(resp.getOutputStream()).write(results.stream()
+                .map(t -> Json.createObjectBuilder()
+                        .add("name", t.getName())
+                        .add("address1", t.getAddress1())
+                        .add("town", t.getTown())
+                        .add("state", t.getPostcode())
+                        .add("postcode", t.getPostcode())
+                        .add("addressNote", t.getAddressNote())
+                        .add("iconUrl", t.getIconUrl())
+                        .add("location", Json.createObjectBuilder()
+                                .add("latitude", t.getLocation().getLatitude())
+                                .add("longitude", t.getLocation().getLongitude())
+                                .build())
+                        .build())
+                .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add,
+                        (left, right) -> {
+                            left.add(right);
+                            return left;
+                        }))
+                .build());
+        resp.getOutputStream().flush();
     }
 }

@@ -1,6 +1,5 @@
 package net.example.toilets.store;
 
-import com.google.gson.Gson;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 import org.junit.BeforeClass;
@@ -10,8 +9,8 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Logger;
 
+import static java.time.LocalDateTime.now;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -33,7 +32,9 @@ public class ToiletStoreTest {
     public static void onlyOnce() {
         InputStream inputStream = ToiletStoreTest.class.getResourceAsStream("/toilets.xml");
         assertThat(inputStream, is(notNullValue()));
+        LocalDateTime start = now();
         toiletStore.initialise(inputStream);
+        System.out.format("Store initialised in %d ms\n", Duration.between(start, now()).toMillis());
     }
 
     @Test

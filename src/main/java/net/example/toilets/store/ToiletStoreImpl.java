@@ -5,13 +5,10 @@ import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 import net.example.toilets.model.ToiletBuilder;
 
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,62 +38,63 @@ public final class ToiletStoreImpl implements ToiletStore {
     public void initialise(InputStream toiletXml) {
         try {
             toilets.clear();
-            toilets.addAll(readToiletsFromToiletXml(toiletXml));
+            toilets.addAll(readToilets(toiletXml));
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Toilet> readToiletsFromToiletXml(InputStream toiletXml) throws XMLStreamException {
+    private List<Toilet> readToilets(InputStream toiletXml) throws XMLStreamException {
         List<Toilet> toilets = new ArrayList<>();
         ToiletBuilder toiletBuilder = null;
+        String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
-        XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(toiletXml);
-        while (xmlEventReader.hasNext()) {
-            XMLEvent xmlEvent = xmlEventReader.nextEvent();
-            if (xmlEvent.isStartElement()) {
-                StartElement startElement = xmlEvent.asStartElement();
-                switch (startElement.getName().getLocalPart()) {
-                    case "ToiletDetails":
-                        toiletBuilder = new ToiletBuilder().setLocation(new Location(
-                                parseDouble(getAttributeValue(startElement, "Latitude")),
-                                parseDouble(getAttributeValue(startElement, "Longitude"))));
-                        break;
-                    case "Name":
-                        toiletBuilder.setName(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "Address1":
-                        toiletBuilder.setAddress1(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "Town":
-                        toiletBuilder.setTown(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "State":
-                        toiletBuilder.setState(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "Postcode":
-                        toiletBuilder.setPostcode(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "IconURL":
-                        toiletBuilder.setIconUrl(readCharacters(xmlEventReader.nextEvent()));
-                        break;
-                    case "Icon":
-                        toiletBuilder.setAddressNote(getAttributeValue(startElement, "IconAltText"));
-                        break;
-                }
-            }
-            if (xmlEvent.isEndElement() && xmlEvent.asEndElement().getName().getLocalPart().equals("ToiletDetails")) {
-                toilets.add(toiletBuilder.createToilet());
+        XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
+        while (xmlStreamReader.hasNext()) {
+            int event = xmlStreamReader.next();
+            switch (event) {
+                case XMLStreamConstants.START_ELEMENT:
+                    switch (xmlStreamReader.getLocalName()) {
+                        case "ToiletDetails":
+                            toiletBuilder = new ToiletBuilder().setLocation(new Location(
+                                    parseDouble(xmlStreamReader.getAttributeValue(null, "Latitude")),
+                                    parseDouble(xmlStreamReader.getAttributeValue(null, "Longitude"))));
+                            break;
+                        case "Icon":
+                            toiletBuilder.setAddressNote(xmlStreamReader.getAttributeValue(null, "IconAltText"));
+                            break;
+                    }
+                    break;
+                case XMLStreamConstants.CHARACTERS:
+                    tagContent = xmlStreamReader.getText();
+                    break;
+                case XMLStreamConstants.END_ELEMENT:
+                    switch (xmlStreamReader.getLocalName()) {
+                        case "Name":
+                            toiletBuilder.setName(tagContent);
+                            break;
+                        case "Address1":
+                            toiletBuilder.setAddress1(tagContent);
+                            break;
+                        case "Town":
+                            toiletBuilder.setTown(tagContent);
+                            break;
+                        case "State":
+                            toiletBuilder.setState(tagContent);
+                            break;
+                        case "Postcode":
+                            toiletBuilder.setPostcode(tagContent);
+                            break;
+                        case "IconURL":
+                            toiletBuilder.setIconUrl(tagContent);
+                            break;
+                        case "ToiletDetails":
+                            toilets.add(toiletBuilder.createToilet());
+                            break;
+                    }
+                    break;
             }
         }
         return toilets;
-    }
-
-    private String getAttributeValue(StartElement startElement, String attributeName) {
-        return startElement.getAttributeByName(new QName(attributeName)).getValue();
-    }
-
-    private String readCharacters(XMLEvent xmlEvent) throws XMLStreamException {
-        return xmlEvent.getEventType() == XMLStreamReader.CHARACTERS ? xmlEvent.asCharacters().getData() : "";
     }
 }
