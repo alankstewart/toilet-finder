@@ -28,7 +28,7 @@ public final class ToiletStoreImpl implements ToiletStore {
     public List<Toilet> search(ToiletQuery query) {
         Location location = query.getLocation();
         return toilets.parallelStream()
-                .filter(t -> distanceBetween(t.getLocation(), location).compareTo(Distance.metres(5000)) <= 0)
+                .filter(t -> distanceBetween(t.getLocation(), location).compareTo(Distance.kilometres(5)) <= 0)
                 .sorted((t1, t2) -> distanceBetween(t1.getLocation(), location).compareTo(distanceBetween(t2.getLocation(), location)))
                 .limit(query.getLimit())
                 .collect(toList());
