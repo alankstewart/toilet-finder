@@ -83,7 +83,7 @@ public class SearchServlet extends HttpServlet {
                 .add("name", t.getName())
                 .add("address1", t.getAddress1())
                 .add("town", t.getTown())
-                .add("state", t.getPostcode())
+                .add("state", t.getState())
                 .add("postcode", t.getPostcode())
                 .add("addressNote", t.getAddressNote())
                 .add("iconUrl", t.getIconUrl())
