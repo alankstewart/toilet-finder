@@ -4,6 +4,8 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
+    <display-name>toilet</display-name>
+
     <servlet>
         <servlet-name>SearchServlet</servlet-name>
         <servlet-class>net.example.toilets.web.SearchServlet</servlet-class>

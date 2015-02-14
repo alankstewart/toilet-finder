@@ -65,7 +65,7 @@ public class SearchServlet extends HttpServlet {
         LocalDateTime start = now();
         List<Toilet> results = store.search(query);
         log("Search: " + query + " took " + between(start, now()).toMillis() + "ms");
-        write(resp, results);
+        writeJson(resp, results);
     }
 
     private double getAsDouble(String str) throws ServletException {
@@ -76,7 +76,7 @@ public class SearchServlet extends HttpServlet {
         }
     }
 
-    private void write(HttpServletResponse resp, List<Toilet> results) throws IOException {
+    private void writeJson(HttpServletResponse resp, List<Toilet> results) throws IOException {
         Json.createWriter(resp.getOutputStream()).write(results.stream()
                 .map(t -> Json.createObjectBuilder()
                         .add("name", t.getName())
@@ -91,11 +91,10 @@ public class SearchServlet extends HttpServlet {
                                 .add("longitude", t.getLocation().getLongitude())
                                 .build())
                         .build())
-                .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add,
-                        (left, right) -> {
-                            left.add(right);
-                            return left;
-                        }))
+                .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
+                    left.add(right);
+                    return left;
+                }))
                 .build());
         resp.getOutputStream().flush();
     }
