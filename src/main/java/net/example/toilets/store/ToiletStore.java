@@ -13,15 +13,15 @@ public interface ToiletStore {
     /**
      * Search for Toilets.
      *
-     * @param query The query to use.
+     * @param query The query to use
      * @return A {@link List} of {@link Toilet} objects. Never null, but may be empty
      */
     List<Toilet> search(ToiletQuery query);
 
     /**
-     * Called by the Servlet on initalisation.
+     * Called by the Servlet on initialisation.
      *
-     * @param toiletXml An InputStream of Toilet XML.
+     * @param toiletXml An InputStream of Toilet XML
      */
     void initialise(InputStream toiletXml);
 }
