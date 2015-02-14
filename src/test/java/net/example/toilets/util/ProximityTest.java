@@ -4,7 +4,9 @@ import net.example.toilets.model.Location;
 import org.junit.Test;
 
 import static net.example.toilets.util.Proximity.distanceBetween;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.number.IsCloseTo.closeTo;
+import static org.junit.Assert.assertThat;
 
 public class ProximityTest {
 
@@ -14,8 +16,8 @@ public class ProximityTest {
         Location operaHouse = new Location(-33.856744, 151.215134);
         Location penguinIsland = new Location(-43.349099, 147.371635);
 
-        assertEquals(6814.3, distanceBetween(bondiBeach, operaHouse).inMetres(), 0.1);
-        assertEquals(1104, distanceBetween(bondiBeach, penguinIsland).inKilometres(), 1);
-        assertEquals(1106, distanceBetween(operaHouse, penguinIsland).inKilometres(), 1);
+        assertThat(distanceBetween(bondiBeach, operaHouse).inMetres(), is(closeTo(6814.3, 0.1)));
+        assertThat(distanceBetween(bondiBeach, penguinIsland).inKilometres(), is(closeTo(1104, 1)));
+        assertThat(distanceBetween(operaHouse, penguinIsland).inKilometres(), is(closeTo(1106, 1)));
     }
 }
