@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collector;
@@ -65,7 +66,8 @@ public class SearchServlet extends HttpServlet {
         LocalDateTime start = now();
         List<Toilet> results = store.search(query);
         log("Search: " + query + " took " + between(start, now()).toMillis() + "ms");
-        writeJson(resp, results);
+        writeJson(resp.getOutputStream(), results);
+        resp.getOutputStream().flush();
     }
 
     private double getAsDouble(String str) throws ServletException {
@@ -76,26 +78,24 @@ public class SearchServlet extends HttpServlet {
         }
     }
 
-    private void writeJson(HttpServletResponse resp, List<Toilet> results) throws IOException {
-        Json.createWriter(resp.getOutputStream()).write(results.stream()
-                .map(t -> Json.createObjectBuilder()
-                        .add("name", t.getName())
-                        .add("address1", t.getAddress1())
-                        .add("town", t.getTown())
-                        .add("state", t.getPostcode())
-                        .add("postcode", t.getPostcode())
-                        .add("addressNote", t.getAddressNote())
-                        .add("iconUrl", t.getIconUrl())
-                        .add("location", Json.createObjectBuilder()
-                                .add("latitude", t.getLocation().getLatitude())
-                                .add("longitude", t.getLocation().getLongitude())
-                                .build())
+    private void writeJson(OutputStream outputStream, List<Toilet> results) throws IOException {
+        Json.createWriter(outputStream).write(results.stream().map(t -> Json.createObjectBuilder()
+                .add("name", t.getName())
+                .add("address1", t.getAddress1())
+                .add("town", t.getTown())
+                .add("state", t.getPostcode())
+                .add("postcode", t.getPostcode())
+                .add("addressNote", t.getAddressNote())
+                .add("iconUrl", t.getIconUrl())
+                .add("location", Json.createObjectBuilder()
+                        .add("latitude", t.getLocation().getLatitude())
+                        .add("longitude", t.getLocation().getLongitude())
                         .build())
+                .build())
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
                     left.add(right);
                     return left;
                 }))
                 .build());
-        resp.getOutputStream().flush();
     }
 }

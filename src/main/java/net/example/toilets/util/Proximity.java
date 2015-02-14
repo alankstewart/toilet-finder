@@ -25,9 +25,9 @@ public final class Proximity {
         final double lon1 = toRadians(pt1.getLongitude());
         final double lon2 = toRadians(pt2.getLongitude());
 
-        double x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
-        double y = (lat2 - lat1);
-        double d = Math.sqrt(x * x + y * y);
+        final double x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+        final double y = (lat2 - lat1);
+        final double d = Math.sqrt(x * x + y * y);
 
         return Distance.kilometres(Math.abs(d * RADIUS_OF_EARTH));
     }
