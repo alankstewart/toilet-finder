@@ -7,6 +7,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $(".search-query").keyup(function () {
+                var bounds = new google.maps.LatLngBounds();
                 geocode($(".search-query").val(), function (input, latlng) {
                     $.ajax({
                         type: 'GET',
@@ -15,23 +16,23 @@
                         dataType: "json",
                         success: function (results) {
                             clear();
-                            $.each(results, function (index) {
-                                var toilet = results[index];
-                                addToilet(toilet.iconUrl, toilet.name, toilet.address1, toilet.town, toilet.state, toilet.postcode, toilet.addressNote);
-                                new google.maps.Marker({
-                                    map: map,
-                                    position: new google.maps.LatLng(toilet.location.latitude, toilet.location.longitude),
-                                    icon: new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/green-dot.png")
-                                });
-                            });
-                            new google.maps.Marker({
+                            var locationMaker = new google.maps.Marker({
                                 map: map,
                                 position: latlng,
                                 icon: new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/red-dot.png")
                             });
-                            map.panTo(latlng);
-                            map.setCenter(latlng);
-                            map.setZoom(15);
+                            $.each(results, function (index) {
+                                var toilet = results[index];
+                                addToilet(toilet.iconUrl, toilet.name, toilet.address1, toilet.town, toilet.state, toilet.postcode, toilet.addressNote);
+                                var pos = new google.maps.LatLng(toilet.location.latitude, toilet.location.longitude);
+                                bounds.extend(pos);
+                                var marker = new google.maps.Marker({
+                                    map: map,
+                                    position: pos,
+                                    icon: new google.maps.MarkerImage("http://maps.google.com/mapfiles/ms/micons/green-dot.png")
+                                });
+                            });
+                            map.fitBounds(bounds);
                         }
                     });
                 });
@@ -160,11 +161,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // For example.
-        // addToilet("http://www.toiletmap.gov.au/images/icons/u.gif", "Toilet Name", "123 ABC Street", "Darlo", "NSW", "2010", "Some Notes ...");
-    </script>
 </div>
 </body>
 </html>
