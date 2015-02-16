@@ -53,4 +53,10 @@ public class Toilet {
     public String getIconUrl() {
         return iconUrl;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Toilet(name=%s,address1=%s,town=%s,state=%s,postcode=%s,addressNote=%s,iconUrl=%s,location=%s)",
+                name, address1, town, state, postcode, addressNote, iconUrl, location);
+    }
 }

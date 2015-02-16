@@ -3,6 +3,7 @@ package net.example.toilets.store;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -26,7 +27,7 @@ public class ToiletStoreTest {
 
     private static final String NAME = "name";
 
-    private static ToiletStore toiletStore = new ToiletStoreImpl();
+    private static ToiletStore toiletStore = new MongoToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
@@ -42,6 +43,7 @@ public class ToiletStoreTest {
         Location location = new Location(-33.868654, 151.201854);
         ToiletQuery query = new ToiletQuery(location, 10);
         List<Toilet> toilets = toiletStore.search(query);
+        toilets.forEach((System.out::println));
         assertThat(toilets, hasSize(10));
         assertThat(toilets, contains(
                 hasProperty(NAME, is("Darling Harbour - Harbourside East")),
@@ -82,11 +84,13 @@ public class ToiletStoreTest {
                 hasProperty(NAME, is("Hyde Park - North 1"))));
     }
 
+    @Ignore
     @Test
     public void shouldFindZeroToilets() {
         Location location = new Location(-35, 155);
         ToiletQuery query = new ToiletQuery(location, 10);
         List<Toilet> toilets = toiletStore.search(query);
+        toilets.forEach(System.out::println);
         assertThat(toilets, is(notNullValue()));
         assertThat(toilets, is(empty()));
     }

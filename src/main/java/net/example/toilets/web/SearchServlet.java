@@ -2,6 +2,7 @@ package net.example.toilets.web;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
+import net.example.toilets.store.MongoToiletStoreImpl;
 import net.example.toilets.store.ToiletQuery;
 import net.example.toilets.store.ToiletStore;
 import net.example.toilets.store.ToiletStoreImpl;
@@ -48,7 +49,7 @@ public class SearchServlet extends HttpServlet {
         }
 
         LocalDateTime start = now();
-        store = new ToiletStoreImpl();
+        store = new MongoToiletStoreImpl();
         store.initialise(xml);
         log("Store initialised in " + between(start, now()).toMillis() + " ms");
     }

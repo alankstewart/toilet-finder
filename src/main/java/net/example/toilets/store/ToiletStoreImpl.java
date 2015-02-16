@@ -38,15 +38,15 @@ public final class ToiletStoreImpl implements ToiletStore {
     public void initialise(InputStream toiletXml) {
         try {
             toilets.clear();
-            toilets.addAll(readToilets(toiletXml));
+            readToilets(toiletXml);
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private List<Toilet> readToilets(InputStream toiletXml) throws XMLStreamException {
-        List<Toilet> toilets = new ArrayList<>();
+    private void readToilets(InputStream toiletXml) throws XMLStreamException {
         ToiletBuilder toiletBuilder = null;
+
         String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
@@ -95,6 +95,5 @@ public final class ToiletStoreImpl implements ToiletStore {
                     break;
             }
         }
-        return toilets;
     }
 }
