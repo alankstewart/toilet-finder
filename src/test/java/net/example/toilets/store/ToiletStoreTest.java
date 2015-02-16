@@ -3,7 +3,6 @@ package net.example.toilets.store;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -84,7 +83,6 @@ public class ToiletStoreTest {
                 hasProperty(NAME, is("Hyde Park - North 1"))));
     }
 
-    @Ignore
     @Test
     public void shouldFindZeroToilets() {
         Location location = new Location(-35, 155);
