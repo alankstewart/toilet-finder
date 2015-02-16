@@ -8,7 +8,7 @@ import static java.lang.Math.toRadians;
 public final class Proximity {
 
     // Optimised for Australia
-    private static final double RADIUS_OF_EARTH = 6364.963;
+    public static final double RADIUS_OF_EARTH = 6364.963;
 
     private Proximity() {
     }
