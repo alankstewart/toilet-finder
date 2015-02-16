@@ -2,7 +2,6 @@ package net.example.toilets.store;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
@@ -22,6 +21,7 @@ import java.util.List;
 import static java.lang.Double.parseDouble;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
+import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
 
 /**
  * Created by alanstewart on 15/02/15.
@@ -34,7 +34,7 @@ public final class MongoToiletStoreImpl implements ToiletStore {
     public List<Toilet> search(ToiletQuery query) {
         Location location = query.getLocation();
         DBObject filter = new QueryBuilder().start("location")
-                .nearSphere(location.getLongitude(), location.getLatitude(), 5000).get();
+                .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH).get();
         return coll.find(filter)
                 .limit(query.getLimit()).toArray()
                 .stream().map(this::createToilet)
@@ -44,9 +44,8 @@ public final class MongoToiletStoreImpl implements ToiletStore {
     @Override
     public void initialise(InputStream toiletXml) {
         try {
-            MongoClient mongoClient = new MongoClient("localhost");
-            DB db = mongoClient.getDB("toiletdb");
-            coll = db.getCollection("toilets");
+            MongoClient mongoClient = new MongoClient();
+            coll = mongoClient.getDB("toiletdb").getCollection("toilets");
             coll.remove(new BasicDBObject());
             coll.createIndex(new BasicDBObject("location", "2dsphere"));
             readToilets(toiletXml);
@@ -120,7 +119,7 @@ public final class MongoToiletStoreImpl implements ToiletStore {
                 .setPostcode(valueOf(dbObject.get("postcode")))
                 .setAddressNote(valueOf(dbObject.get("addressNote")))
                 .setIconUrl(valueOf(dbObject.get("iconUrl")))
-                .setLocation(new Location((double) coordinates.get(1), (double) coordinates.get(0)))
+                .setLocation(new Location((Double) coordinates.get(1), (Double) coordinates.get(0)))
                 .createToilet();
     }
 }
