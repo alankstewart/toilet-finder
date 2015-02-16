@@ -20,6 +20,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
+import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -112,13 +113,13 @@ public final class MongoToiletStoreImpl implements ToiletStore {
         DBObject locationDbObject = (DBObject) dbObject.get("location");
         BasicDBList coordinates = (BasicDBList) locationDbObject.get("coordinates");
         return new ToiletBuilder()
-                .setName(String.valueOf(dbObject.get("name")))
-                .setAddress1(String.valueOf(dbObject.get("address1")))
-                .setTown(String.valueOf(dbObject.get("town")))
-                .setState(String.valueOf(dbObject.get("state")))
-                .setPostcode(String.valueOf(dbObject.get("postcode")))
-                .setAddressNote(String.valueOf(dbObject.get("addressNote")))
-                .setIconUrl(String.valueOf(dbObject.get("iconUrl")))
+                .setName(valueOf(dbObject.get("name")))
+                .setAddress1(valueOf(dbObject.get("address1")))
+                .setTown(valueOf(dbObject.get("town")))
+                .setState(valueOf(dbObject.get("state")))
+                .setPostcode(valueOf(dbObject.get("postcode")))
+                .setAddressNote(valueOf(dbObject.get("addressNote")))
+                .setIconUrl(valueOf(dbObject.get("iconUrl")))
                 .setLocation(new Location((double) coordinates.get(1), (double) coordinates.get(0)))
                 .createToilet();
     }
