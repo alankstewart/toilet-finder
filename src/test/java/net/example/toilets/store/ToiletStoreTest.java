@@ -26,7 +26,7 @@ public class ToiletStoreTest {
 
     private static final String NAME = "name";
 
-    private static ToiletStore toiletStore = new MongoToiletStoreImpl();
+    private static ToiletStore toiletStore = new MongoDBToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {

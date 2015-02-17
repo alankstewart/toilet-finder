@@ -26,7 +26,7 @@ import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
 /**
  * Created by alanstewart on 15/02/15.
  */
-public final class MongoToiletStoreImpl implements ToiletStore {
+public final class MongoDBToiletStoreImpl implements ToiletStore {
 
     private DBCollection coll;
 
