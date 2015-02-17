@@ -24,7 +24,7 @@
                             $.each(results, function (index) {
                                 var toilet = results[index];
                                 addToilet(toilet.iconUrl, toilet.name, toilet.address1, toilet.town, toilet.state, toilet.postcode, toilet.addressNote);
-                                var pos = new google.maps.LatLng(toilet.location.latitude, toilet.location.longitude);
+                                var pos = new google.maps.LatLng(toilet.location.coordinates[1], toilet.location.coordinates[0]);
                                 bounds.extend(pos);
                                 var marker = new google.maps.Marker({
                                     map: map,

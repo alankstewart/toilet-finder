@@ -87,9 +87,10 @@ public class SearchServlet extends HttpServlet {
                 .add("postcode", t.getPostcode())
                 .add("addressNote", t.getAddressNote())
                 .add("iconUrl", t.getIconUrl())
-                .add("location", Json.createObjectBuilder()
-                        .add("latitude", t.getLocation().getLatitude())
-                        .add("longitude", t.getLocation().getLongitude())
+                .add("location", Json.createObjectBuilder().add("type", "Point")
+                        .add("coordinates", Json.createArrayBuilder()
+                                .add(t.getLocation().getLongitude())
+                                .add(t.getLocation().getLatitude()))
                         .build())
                 .build())
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
