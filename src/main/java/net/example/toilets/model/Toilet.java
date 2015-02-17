@@ -56,7 +56,7 @@ public class Toilet {
 
     @Override
     public String toString() {
-        return String.format("Toilet(name=%s,address1=%s,town=%s,state=%s,postcode=%s,addressNote=%s,iconUrl=%s,location=%s)",
-                name, address1, town, state, postcode, addressNote, iconUrl, location);
+        return String.format("%s{name=%s,address1=%s,town=%s,state=%s,postcode=%s,addressNote=%s,iconUrl=%s,location=%s}",
+                getClass().getSimpleName(), name, address1, town, state, postcode, addressNote, iconUrl, location);
     }
 }

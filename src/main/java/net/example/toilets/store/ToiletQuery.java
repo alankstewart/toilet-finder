@@ -22,9 +22,6 @@ public class ToiletQuery {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + '{' +
-                "location=" + location +
-                ", limit=" + limit +
-                '}';
+        return String.format("%s{location=%s,limit=%d}", getClass().getSimpleName(), location, limit);
     }
 }

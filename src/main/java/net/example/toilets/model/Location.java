@@ -20,6 +20,6 @@ public class Location {
 
     @Override
     public String toString() {
-        return "(latitude=" + latitude + ",longitude=" + longitude + ")";
+        return String.format("%s{latitude=%f,longitude=%f}", getClass().getSimpleName(), latitude, longitude);
     }
 }

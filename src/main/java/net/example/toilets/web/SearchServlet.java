@@ -50,7 +50,7 @@ public class SearchServlet extends HttpServlet {
         LocalDateTime start = now();
         store = new MongoDBToiletStoreImpl();
         store.initialise(xml);
-        log("Store initialised in " + between(start, now()).toMillis() + " ms");
+        log("Toilet store initialised in " + between(start, now()).toMillis() + " ms");
     }
 
     @Override
