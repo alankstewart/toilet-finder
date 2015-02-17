@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Double.parseDouble;
@@ -32,6 +33,10 @@ public final class MongoDBToiletStoreImpl implements ToiletStore {
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
+        if (coll == null) {
+            return Collections.<Toilet>emptyList();
+        }
+
         Location location = query.getLocation();
         return coll.find(QueryBuilder.start("location")
                 .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH)
