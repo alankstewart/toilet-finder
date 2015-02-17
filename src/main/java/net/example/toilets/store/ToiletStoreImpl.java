@@ -22,7 +22,7 @@ import static net.example.toilets.util.Proximity.distanceBetween;
  */
 public final class ToiletStoreImpl implements ToiletStore {
 
-    private List<Toilet> toilets = new ArrayList<>();
+    private final List<Toilet> toilets = new ArrayList<>();
 
     @Override
     public List<Toilet> search(ToiletQuery query) {

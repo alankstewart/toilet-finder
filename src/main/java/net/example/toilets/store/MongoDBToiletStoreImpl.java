@@ -33,8 +33,7 @@ public final class MongoDBToiletStoreImpl implements ToiletStore {
     @Override
     public List<Toilet> search(ToiletQuery query) {
         Location location = query.getLocation();
-        DBObject filter = new QueryBuilder().start("location")
-                .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH).get();
+        DBObject filter = QueryBuilder.start("location").nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH).get();
         return coll.find(filter)
                 .limit(query.getLimit()).toArray()
                 .stream().map(this::createToilet)
