@@ -16,7 +16,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
