@@ -11,27 +11,24 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static java.util.stream.Collectors.toList;
+import static org.hamcrest.core.IsCollectionContaining.hasItems;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by alanstewart on 6/02/15.
  */
 public class ToiletStoreTest {
 
-    private static final String NAME = "name";
-
     private static ToiletStore toiletStore = new MongoDBToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
         InputStream inputStream = ToiletStoreTest.class.getResourceAsStream("/toilets.xml");
-        assertThat(inputStream, is(notNullValue()));
+        assertNotNull(inputStream);
         LocalDateTime start = now();
         toiletStore.initialise(inputStream);
         System.out.format("Store initialised in %d ms\n", Duration.between(start, now()).toMillis());
@@ -41,46 +38,46 @@ public class ToiletStoreTest {
     public void shouldFindTenToiletsNear55LimeStreetSydney() {
         Location location = new Location(-33.868654, 151.201854);
         ToiletQuery query = new ToiletQuery(location, 10);
-        List<Toilet> toilets = toiletStore.search(query);
-        toilets.forEach((System.out::println));
-        assertThat(toilets, hasSize(10));
-        assertThat(toilets, contains(
-                hasProperty(NAME, is("Darling Harbour - Harbourside East")),
-                hasProperty(NAME, is("Darling Harbour - Harbourside West")),
-                hasProperty(NAME, is("Darling Walk")),
-                hasProperty(NAME, is("Wynyard Park")),
-                hasProperty(NAME, is("Wynyard Train Station")),
-                hasProperty(NAME, is("Metcentre")),
-                hasProperty(NAME, is("Lang Park")),
-                hasProperty(NAME, is("Town Hall Square")),
-                hasProperty(NAME, is("Town Hall Train Station")),
-                hasProperty(NAME, is("David Jones - Castlereagh Street"))));
+        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        toiletNames.forEach((System.out::println));
+        assertEquals(10, toiletNames.size());
+        assertThat(toiletNames, hasItems(
+                "Darling Harbour - Harbourside East",
+                "Darling Harbour - Harbourside West",
+                "Darling Walk",
+                "Wynyard Park",
+                "Wynyard Train Station",
+                "Metcentre",
+                "Lang Park",
+                "Town Hall Square",
+                "Town Hall Train Station",
+                "David Jones - Castlereagh Street"));
     }
 
     @Test
     public void shouldFindFiveToiletsNearHome() {
         Location location = new Location(-33.707452, 151.113031);
         ToiletQuery query = new ToiletQuery(location, 5);
-        List<Toilet> toilets = toiletStore.search(query);
-        assertThat(toilets, hasSize(5));
-        assertThat(toilets, contains(
-                hasProperty(NAME, is("Carrington Oval")),
-                hasProperty(NAME, is("Waitara Park")),
-                hasProperty(NAME, is("Willow Park")),
-                hasProperty(NAME, is("PA James Park")),
-                hasProperty(NAME, is("Waitara Train Station"))));
+        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        assertEquals(5, toiletNames.size());
+        assertThat(toiletNames, hasItems(
+                "Carrington Oval",
+                "Waitara Park",
+                "Willow Park",
+                "PA James Park",
+                "Waitara Train Station"));
     }
 
     @Test
     public void shouldFindThreeToiletsNearReserveBank() {
         Location location = new Location(-33.867960, 151.211745);
         ToiletQuery query = new ToiletQuery(location, 3);
-        List<Toilet> toilets = toiletStore.search(query);
-        assertThat(toilets, hasSize(3));
-        assertThat(toilets, contains(
-                hasProperty(NAME, is("Martin Place Train Station")),
-                hasProperty(NAME, is("Colonial Centre")),
-                hasProperty(NAME, is("Hyde Park - North 1"))));
+        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        assertEquals(3, toiletNames.size());
+        assertThat(toiletNames, hasItems(
+                "Martin Place Train Station",
+                "Colonial Centre",
+                "Hyde Park - North 1"));
     }
 
     @Test
@@ -88,8 +85,6 @@ public class ToiletStoreTest {
         Location location = new Location(-35, 155);
         ToiletQuery query = new ToiletQuery(location, 10);
         List<Toilet> toilets = toiletStore.search(query);
-        toilets.forEach(System.out::println);
-        assertThat(toilets, is(notNullValue()));
-        assertThat(toilets, is(empty()));
+        assertTrue(toilets.isEmpty());
     }
 }
