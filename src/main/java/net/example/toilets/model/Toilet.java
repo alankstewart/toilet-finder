@@ -66,11 +66,11 @@ public class Toilet {
                 .add("postcode", postcode)
                 .add("addressNote", addressNote)
                 .add("iconUrl", iconUrl)
-                .add("location", Json.createObjectBuilder().add("type", "Point")
+                .add("location", Json.createObjectBuilder()
+                        .add("type", "Point")
                         .add("coordinates", Json.createArrayBuilder()
                                 .add(location.getLongitude())
-                                .add(location.getLatitude()))
-                        .build())
+                                .add(location.getLatitude())))
                 .build();
     }
 
