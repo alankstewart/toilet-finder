@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ToiletStoreTest {
 
-    private static ToiletStore toiletStore = new MongoToiletStoreImpl();
+    private static ToiletStore toiletStore = new ToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
