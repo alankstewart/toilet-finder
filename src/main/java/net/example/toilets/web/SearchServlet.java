@@ -2,7 +2,7 @@ package net.example.toilets.web;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
-import net.example.toilets.store.MongoDBToiletStoreImpl;
+import net.example.toilets.store.MongoToiletStoreImpl;
 import net.example.toilets.store.ToiletQuery;
 import net.example.toilets.store.ToiletStore;
 
@@ -48,7 +48,7 @@ public class SearchServlet extends HttpServlet {
         }
 
         LocalDateTime start = now();
-        store = new MongoDBToiletStoreImpl();
+        store = new MongoToiletStoreImpl();
         store.initialise(xml);
         log("Toilet store initialised in " + between(start, now()).toMillis() + " ms");
     }
@@ -79,24 +79,10 @@ public class SearchServlet extends HttpServlet {
     }
 
     private void writeJson(OutputStream outputStream, List<Toilet> results) throws IOException {
-        Json.createWriter(outputStream).write(results.stream().map(t -> Json.createObjectBuilder()
-                .add("name", t.getName())
-                .add("address1", t.getAddress1())
-                .add("town", t.getTown())
-                .add("state", t.getState())
-                .add("postcode", t.getPostcode())
-                .add("addressNote", t.getAddressNote())
-                .add("iconUrl", t.getIconUrl())
-                .add("location", Json.createObjectBuilder().add("type", "Point")
-                        .add("coordinates", Json.createArrayBuilder()
-                                .add(t.getLocation().getLongitude())
-                                .add(t.getLocation().getLatitude()))
-                        .build())
-                .build())
+        Json.createWriter(outputStream).write(results.stream().map(t -> t.getAsJson())
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
                     left.add(right);
                     return left;
-                }))
-                .build());
+                })).build());
     }
 }

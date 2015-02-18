@@ -1,5 +1,12 @@
 package net.example.toilets.model;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+
+import javax.json.Json;
+import javax.json.JsonStructure;
+
 public class Toilet {
 
     private final String name;
@@ -52,6 +59,23 @@ public class Toilet {
 
     public String getIconUrl() {
         return iconUrl;
+    }
+
+    public JsonStructure getAsJson() {
+        return Json.createObjectBuilder()
+                .add("name", name)
+                .add("address1", address1)
+                .add("town", town)
+                .add("state", state)
+                .add("postcode", postcode)
+                .add("addressNote", addressNote)
+                .add("iconUrl", iconUrl)
+                .add("location", Json.createObjectBuilder().add("type", "Point")
+                        .add("coordinates", Json.createArrayBuilder()
+                                .add(location.getLongitude())
+                                .add(location.getLatitude()))
+                        .build())
+                .build();
     }
 
     @Override
