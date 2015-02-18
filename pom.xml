@@ -43,7 +43,7 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
- Remived       </dependency>
+        </dependency>
     </dependencies>
 
     <build>
