@@ -36,9 +36,7 @@ public class ToiletStoreTest {
 
     @Test
     public void shouldFindTenToiletsNear55LimeStreetSydney() {
-        Location location = new Location(-33.868654, 151.201854);
-        ToiletQuery query = new ToiletQuery(location, 10);
-        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        List<String> toiletNames = searchToiletStore(-33.868654, 151.201854, 10);
         toiletNames.forEach((System.out::println));
         assertEquals(10, toiletNames.size());
         assertThat(toiletNames, hasItems(
@@ -56,9 +54,7 @@ public class ToiletStoreTest {
 
     @Test
     public void shouldFindFiveToiletsNearHome() {
-        Location location = new Location(-33.707452, 151.113031);
-        ToiletQuery query = new ToiletQuery(location, 5);
-        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        List<String> toiletNames = searchToiletStore(-33.707452, 151.113031, 5);
         assertEquals(5, toiletNames.size());
         assertThat(toiletNames, hasItems(
                 "Carrington Oval",
@@ -70,9 +66,7 @@ public class ToiletStoreTest {
 
     @Test
     public void shouldFindThreeToiletsNearReserveBank() {
-        Location location = new Location(-33.867960, 151.211745);
-        ToiletQuery query = new ToiletQuery(location, 3);
-        List<String> toiletNames = toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        List<String> toiletNames = searchToiletStore(-33.867960, 151.211745, 3);
         assertEquals(3, toiletNames.size());
         assertThat(toiletNames, hasItems(
                 "Martin Place Train Station",
@@ -86,5 +80,11 @@ public class ToiletStoreTest {
         ToiletQuery query = new ToiletQuery(location, 10);
         List<Toilet> toilets = toiletStore.search(query);
         assertTrue(toilets.isEmpty());
+    }
+
+    private List<String> searchToiletStore(double latitude, double longitude, int limit) {
+        Location location = new Location(latitude, longitude);
+        ToiletQuery query = new ToiletQuery(location, limit);
+        return toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
     }
 }
