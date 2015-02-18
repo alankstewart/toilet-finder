@@ -76,10 +76,8 @@ public class ToiletStoreTest {
 
     @Test
     public void shouldFindZeroToilets() {
-        Location location = new Location(-35, 155);
-        ToiletQuery query = new ToiletQuery(location, 10);
-        List<Toilet> toilets = toiletStore.search(query);
-        assertTrue(toilets.isEmpty());
+        List<String> toiletNames = searchToiletStore(-35, 35, 10);
+        assertTrue(toiletNames.isEmpty());
     }
 
     private List<String> searchToiletStore(double latitude, double longitude, int limit) {
