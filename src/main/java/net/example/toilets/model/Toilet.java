@@ -1,9 +1,5 @@
 package net.example.toilets.model;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-
 import javax.json.Json;
 import javax.json.JsonStructure;
 
@@ -61,7 +57,7 @@ public class Toilet {
         return iconUrl;
     }
 
-    public JsonStructure getAsJson() {
+    public JsonStructure getJsonStructure() {
         return Json.createObjectBuilder()
                 .add("name", name)
                 .add("address1", address1)

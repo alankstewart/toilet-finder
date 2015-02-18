@@ -79,7 +79,7 @@ public class SearchServlet extends HttpServlet {
     }
 
     private void writeJson(OutputStream outputStream, List<Toilet> results) throws IOException {
-        Json.createWriter(outputStream).write(results.stream().map(t -> t.getAsJson())
+        Json.createWriter(outputStream).write(results.stream().map(t -> t.getJsonStructure())
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
                     left.add(right);
                     return left;
