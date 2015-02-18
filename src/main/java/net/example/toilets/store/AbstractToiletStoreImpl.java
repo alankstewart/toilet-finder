@@ -67,6 +67,7 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                     break;
             }
         }
+        xmlStreamReader.close();
     }
 
     protected abstract void add(Toilet toilet);
