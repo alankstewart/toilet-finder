@@ -1,7 +1,6 @@
 package net.example.toilets.store;
 
 import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
