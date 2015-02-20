@@ -5,6 +5,15 @@ import javax.json.JsonStructure;
 
 public class Toilet {
 
+    public static final String KEY_NAME = "name";
+    public static final String KEY_ADDR = "address1";
+    public static final String KEY_TOWN = "town";
+    public static final String KEY_STATE = "state";
+    public static final String KEY_PCODE = "postcode";
+    public static final String KEY_NOTE = "addressNote";
+    public static final String KEY_ICON = "iconUrl";
+    public static final String KEY_LOC = "location";
+
     private final String name;
     private final String address1;
     private final String town;
@@ -59,14 +68,14 @@ public class Toilet {
 
     public JsonStructure getJsonStructure() {
         return Json.createObjectBuilder()
-                .add("name", name)
-                .add("address1", address1)
-                .add("town", town)
-                .add("state", state)
-                .add("postcode", postcode)
-                .add("addressNote", addressNote)
-                .add("iconUrl", iconUrl)
-                .add("location", Json.createObjectBuilder()
+                .add(KEY_NAME, name)
+                .add(KEY_ADDR, address1)
+                .add(KEY_TOWN, town)
+                .add(KEY_STATE, state)
+                .add(KEY_PCODE, postcode)
+                .add(KEY_NOTE, addressNote)
+                .add(KEY_ICON, iconUrl)
+                .add(KEY_LOC, Json.createObjectBuilder()
                         .add("type", "Point")
                         .add("coordinates", Json.createArrayBuilder()
                                 .add(location.getLongitude())

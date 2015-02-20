@@ -51,7 +51,7 @@ public final class ToiletBuilder {
         return this;
     }
 
-    public Toilet createToilet() {
+    public Toilet build() {
         return new Toilet(name, address1, town, state, postcode, addressNote, location, iconUrl);
     }
 }

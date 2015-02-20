@@ -18,7 +18,7 @@ import static java.lang.Double.parseDouble;
 public abstract class AbstractToiletStoreImpl implements ToiletStore {
 
     protected void readToiletXml(InputStream toiletXml) throws XMLStreamException {
-        ToiletBuilder toiletBuilder = null;
+        ToiletBuilder toiletBuilder = new ToiletBuilder();
         String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
@@ -61,7 +61,7 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                             toiletBuilder.setIconUrl(tagContent);
                             break;
                         case "ToiletDetails":
-                            add(toiletBuilder.createToilet());
+                            add(toiletBuilder.build());
                             break;
                     }
                     break;

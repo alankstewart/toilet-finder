@@ -18,6 +18,14 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
+import static net.example.toilets.model.Toilet.KEY_ADDR;
+import static net.example.toilets.model.Toilet.KEY_ICON;
+import static net.example.toilets.model.Toilet.KEY_LOC;
+import static net.example.toilets.model.Toilet.KEY_NAME;
+import static net.example.toilets.model.Toilet.KEY_NOTE;
+import static net.example.toilets.model.Toilet.KEY_PCODE;
+import static net.example.toilets.model.Toilet.KEY_STATE;
+import static net.example.toilets.model.Toilet.KEY_TOWN;
 import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
 
 /**
@@ -34,7 +42,7 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
         }
 
         Location location = query.getLocation();
-        return coll.find(QueryBuilder.start("location")
+        return coll.find(QueryBuilder.start(KEY_LOC)
                 .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH)
                 .get()).limit(query.getLimit()).toArray()
                 .stream().map(this::createToilet)
@@ -47,7 +55,7 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
             MongoClient mongoClient = new MongoClient();
             coll = mongoClient.getDB("toiletdb").getCollection("toilets");
             coll.remove(new BasicDBObject());
-            coll.createIndex(new BasicDBObject("location", "2dsphere"));
+            coll.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
             readToiletXml(toiletXml);
         } catch (UnknownHostException | XMLStreamException e) {
             throw new RuntimeException(e);
@@ -60,28 +68,28 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
         BasicDBList coordinates = new BasicDBList();
         coordinates.put(0, location.getLongitude());
         coordinates.put(1, location.getLatitude());
-        coll.insert(new BasicDBObject("name", toilet.getName())
-                .append("address1", toilet.getAddress1())
-                .append("town", toilet.getTown())
-                .append("state", toilet.getState())
-                .append("postcode", toilet.getPostcode())
-                .append("addressNote", toilet.getAddressNote())
-                .append("iconUrl", toilet.getIconUrl())
-                .append("location", new BasicDBObject("type", "Point").append("coordinates", coordinates)));
+        coll.insert(new BasicDBObject(KEY_NAME, toilet.getName())
+                .append(KEY_ADDR, toilet.getAddress1())
+                .append(KEY_TOWN, toilet.getTown())
+                .append(KEY_STATE, toilet.getState())
+                .append(KEY_PCODE, toilet.getPostcode())
+                .append(KEY_NOTE, toilet.getAddressNote())
+                .append(KEY_ICON, toilet.getIconUrl())
+                .append(KEY_LOC, new BasicDBObject("type", "Point").append("coordinates", coordinates)));
     }
 
     private Toilet createToilet(DBObject dbObject) {
-        DBObject locationDbObject = (DBObject) dbObject.get("location");
+        DBObject locationDbObject = (DBObject) dbObject.get(KEY_LOC);
         BasicDBList coordinates = (BasicDBList) locationDbObject.get("coordinates");
         return new ToiletBuilder()
-                .setName(valueOf(dbObject.get("name")))
-                .setAddress1(valueOf(dbObject.get("address1")))
-                .setTown(valueOf(dbObject.get("town")))
-                .setState(valueOf(dbObject.get("state")))
-                .setPostcode(valueOf(dbObject.get("postcode")))
-                .setAddressNote(valueOf(dbObject.get("addressNote")))
-                .setIconUrl(valueOf(dbObject.get("iconUrl")))
+                .setName(valueOf(dbObject.get(KEY_NAME)))
+                .setAddress1(valueOf(dbObject.get(KEY_ADDR)))
+                .setTown(valueOf(dbObject.get(KEY_TOWN)))
+                .setState(valueOf(dbObject.get(KEY_STATE)))
+                .setPostcode(valueOf(dbObject.get(KEY_PCODE)))
+                .setAddressNote(valueOf(dbObject.get(KEY_NOTE)))
+                .setIconUrl(valueOf(dbObject.get(KEY_ICON)))
                 .setLocation(new Location((Double) coordinates.get(1), (Double) coordinates.get(0)))
-                .createToilet();
+                .build();
     }
 }

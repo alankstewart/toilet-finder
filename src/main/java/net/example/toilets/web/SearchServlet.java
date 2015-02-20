@@ -34,7 +34,6 @@ import static java.time.LocalDateTime.now;
 public class SearchServlet extends HttpServlet {
 
     private static final String XML_CP = "/WEB-INF/classes/toilets.xml";
-
     private static final String LATITUDE = "lat";
     private static final String LONGITUDE = "lng";
 
@@ -78,8 +77,8 @@ public class SearchServlet extends HttpServlet {
         }
     }
 
-    private void writeJson(OutputStream outputStream, List<Toilet> results) throws IOException {
-        Json.createWriter(outputStream).write(results.stream().map(t -> t.getJsonStructure())
+    private void writeJson(OutputStream outputStream, List<Toilet> results) {
+        Json.createWriter(outputStream).write(results.stream().map(Toilet::getJsonStructure)
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
                     left.add(right);
                     return left;
