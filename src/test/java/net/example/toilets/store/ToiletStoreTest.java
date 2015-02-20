@@ -1,6 +1,7 @@
 package net.example.toilets.store;
 
 import net.example.toilets.model.Location;
+import net.example.toilets.model.Toilet;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,14 +23,14 @@ import static org.junit.Assert.assertTrue;
  */
 public class ToiletStoreTest {
 
-    private static ToiletStore toiletStore = new ToiletStoreImpl();
+    private static final ToiletStore TOILET_STORE = new ToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
         InputStream inputStream = ToiletStoreTest.class.getResourceAsStream("/toilets.xml");
         assertNotNull(inputStream);
         LocalDateTime start = now();
-        toiletStore.initialise(inputStream);
+        TOILET_STORE.initialise(inputStream);
         System.out.format("Store initialised in %d ms\n", Duration.between(start, now()).toMillis());
     }
 
@@ -82,6 +83,6 @@ public class ToiletStoreTest {
     private List<String> searchToiletStore(double latitude, double longitude, int limit) {
         Location location = new Location(latitude, longitude);
         ToiletQuery query = new ToiletQuery(location, limit);
-        return toiletStore.search(query).stream().map(t -> t.getName()).collect(toList());
+        return TOILET_STORE.search(query).stream().map(Toilet::getName).collect(toList());
     }
 }
