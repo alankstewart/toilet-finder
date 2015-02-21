@@ -33,7 +33,7 @@ import static java.time.LocalDateTime.now;
  */
 public class SearchServlet extends HttpServlet {
 
-    private static final String XML_CP = "/WEB-INF/classes/toilets.xml";
+    private static final String XML_CP = "/toilets.xml";
     private static final String LATITUDE = "lat";
     private static final String LONGITUDE = "lng";
 
@@ -41,7 +41,7 @@ public class SearchServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        InputStream xml = getServletContext().getResourceAsStream(XML_CP);
+        InputStream xml = getClass().getResourceAsStream(XML_CP);
         if (xml == null) {
             throw new ServletException("Cannot find '" + XML_CP + "'");
         }
