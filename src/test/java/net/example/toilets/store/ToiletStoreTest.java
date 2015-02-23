@@ -6,11 +6,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -23,15 +20,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class ToiletStoreTest {
 
-    private static final ToiletStore TOILET_STORE = new ToiletStoreImpl();
+    private static final ToiletStore TOILET_STORE = new JdbcToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
         InputStream inputStream = ToiletStoreTest.class.getResourceAsStream("/toilets.xml");
         assertNotNull(inputStream);
-        LocalDateTime start = now();
         TOILET_STORE.initialise(inputStream);
-        System.out.format("Store initialised in %d ms\n", Duration.between(start, now()).toMillis());
     }
 
     @Test
@@ -53,15 +48,20 @@ public class ToiletStoreTest {
     }
 
     @Test
-    public void shouldFindFiveToiletsNearHome() {
-        List<String> toiletNames = searchToiletStore(-33.707452, 151.113031, 5);
-        assertEquals(5, toiletNames.size());
+    public void shouldFindTenToiletsNearHome() {
+        List<String> toiletNames = searchToiletStore(-33.707452, 151.113031, 10);
+        assertEquals(10, toiletNames.size());
         assertThat(toiletNames, hasItems(
                 "Carrington Oval",
                 "Waitara Park",
                 "Willow Park",
                 "PA James Park",
-                "Waitara Train Station"));
+                "Waitara Train Station",
+                "Caltex Australia",
+                "Wahroonga Park",
+                "Wahroonga Train Station",
+                "Wahroonga Car Park",
+                "BP Express Hornsby"));
     }
 
     @Test

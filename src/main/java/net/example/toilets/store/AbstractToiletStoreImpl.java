@@ -38,7 +38,7 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                     }
                     break;
                 case XMLStreamConstants.CHARACTERS:
-                    tagContent = xmlStreamReader.getText();
+                    tagContent = xmlStreamReader.getText().trim();
                     break;
                 case XMLStreamConstants.END_ELEMENT:
                     switch (xmlStreamReader.getLocalName()) {
@@ -64,6 +64,7 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                             add(toiletBuilder.build());
                             break;
                     }
+                    tagContent = "";
                     break;
             }
         }
