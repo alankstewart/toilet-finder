@@ -31,7 +31,6 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
-        Location location = query.getLocation();
         String sql = new StringBuilder()
                 .append("select *, (")
                 .append(RADIUS_OF_EARTH)
@@ -42,16 +41,17 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
                 .append(" group by name, address1, town, state, postcode, address_note, icon_url, latitude, longitude")
                 .append(" having distance <= 5")
                 .append(" order by distance")
-                .append(" limit ")
-                .append(query.getLimit())
+                .append(" limit ?")
                 .toString();
 
         List<Toilet> toilets = new ArrayList<>();
+        Location location = query.getLocation();
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, location.getLatitude());
             ps.setDouble(2, location.getLongitude());
             ps.setDouble(3, location.getLatitude());
+            ps.setInt(4, query.getLimit());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Toilet toilet = new ToiletBuilder()
