@@ -44,7 +44,6 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
                 .append(" limit ?")
                 .toString();
 
-        List<Toilet> toilets = new ArrayList<>();
         Location location = query.getLocation();
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -53,6 +52,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             ps.setDouble(3, location.getLatitude());
             ps.setInt(4, query.getLimit());
             ResultSet rs = ps.executeQuery();
+            List<Toilet> toilets = new ArrayList<>();
             while (rs.next()) {
                 Toilet toilet = new ToiletBuilder()
                         .setName(rs.getString(1))
@@ -68,7 +68,6 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             }
             return toilets;
         } catch (SQLException e) {
-            e.printStackTrace();
             return Collections.<Toilet>emptyList();
         }
     }
