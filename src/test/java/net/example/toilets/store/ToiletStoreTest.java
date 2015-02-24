@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ToiletStoreTest {
 
-    private static final ToiletStore TOILET_STORE = new JdbcToiletStoreImpl();
+    private static final ToiletStore TOILET_STORE = new ToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
