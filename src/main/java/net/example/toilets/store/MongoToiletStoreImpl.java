@@ -2,17 +2,18 @@ package net.example.toilets.store;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteOperation;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
-import net.example.toilets.model.ToiletBuilder;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
 public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
 
     private DBCollection coll;
+    private final List<Toilet> toilets = new ArrayList<>();
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
@@ -57,6 +59,9 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
             coll.remove(new BasicDBObject());
             coll.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
             readToiletXml(toiletXml);
+            if (!toilets.isEmpty()) {
+                addToiletsToCollection();
+            }
         } catch (UnknownHostException | XMLStreamException e) {
             throw new RuntimeException(e);
         }
@@ -64,24 +69,39 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     protected void add(Toilet toilet) {
-        Location location = toilet.getLocation();
-        BasicDBList coordinates = new BasicDBList();
-        coordinates.put(0, location.getLongitude());
-        coordinates.put(1, location.getLatitude());
-        coll.insert(new BasicDBObject(KEY_NAME, toilet.getName())
-                .append(KEY_ADDR, toilet.getAddress1())
-                .append(KEY_TOWN, toilet.getTown())
-                .append(KEY_STATE, toilet.getState())
-                .append(KEY_PCODE, toilet.getPostcode())
-                .append(KEY_NOTE, toilet.getAddressNote())
-                .append(KEY_ICON, toilet.getIconUrl())
-                .append(KEY_LOC, new BasicDBObject("type", "Point").append("coordinates", coordinates)));
+        if (toilets.size() == 1000) {
+            addToiletsToCollection();
+        }
+        toilets.add(toilet);
+    }
+
+    private void addToiletsToCollection() {
+        BulkWriteOperation bulkWriteOperation = coll.initializeOrderedBulkOperation();
+        for (Toilet toilet : toilets) {
+            Location location = toilet.getLocation();
+            BasicDBList coordinates = new BasicDBList();
+            coordinates.put(0, location.getLongitude());
+            coordinates.put(1, location.getLatitude());
+            DBObject dbObject = new BasicDBObject(KEY_NAME, toilet.getName())
+                    .append(KEY_ADDR, toilet.getAddress1())
+                    .append(KEY_TOWN, toilet.getTown())
+                    .append(KEY_STATE, toilet.getState())
+                    .append(KEY_PCODE, toilet.getPostcode())
+                    .append(KEY_NOTE, toilet.getAddressNote())
+                    .append(KEY_ICON, toilet.getIconUrl())
+                    .append(KEY_LOC, new BasicDBObject("type", "Point").append("coordinates", coordinates));
+            bulkWriteOperation.insert(dbObject);
+        }
+        if (bulkWriteOperation.execute().getInsertedCount() != toilets.size()) {
+            throw new IllegalStateException("Failed to add toilets to collection");
+        }
+        toilets.clear();
     }
 
     private Toilet createToilet(DBObject dbObject) {
         DBObject locationDbObject = (DBObject) dbObject.get(KEY_LOC);
         BasicDBList coordinates = (BasicDBList) locationDbObject.get("coordinates");
-        return new ToiletBuilder()
+        return new Toilet.Builder()
                 .setName(valueOf(dbObject.get(KEY_NAME)))
                 .setAddress1(valueOf(dbObject.get(KEY_ADDR)))
                 .setTown(valueOf(dbObject.get(KEY_TOWN)))

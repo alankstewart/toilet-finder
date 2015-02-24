@@ -2,7 +2,6 @@ package net.example.toilets.store;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
-import net.example.toilets.model.ToiletBuilder;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -15,10 +14,10 @@ import static java.lang.Double.parseDouble;
 /**
  * Created by alanstewart on 18/02/15.
  */
-public abstract class AbstractToiletStoreImpl implements ToiletStore {
+abstract class AbstractToiletStoreImpl implements ToiletStore {
 
     protected void readToiletXml(InputStream toiletXml) throws XMLStreamException {
-        ToiletBuilder toiletBuilder = new ToiletBuilder();
+        Toilet.Builder builder = new Toilet.Builder();
         String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
         XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
@@ -28,12 +27,12 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                 case XMLStreamConstants.START_ELEMENT:
                     switch (xmlStreamReader.getLocalName()) {
                         case "ToiletDetails":
-                            toiletBuilder = new ToiletBuilder().setLocation(new Location(
+                            builder = new Toilet.Builder().setLocation(new Location(
                                     parseDouble(xmlStreamReader.getAttributeValue(null, "Latitude")),
                                     parseDouble(xmlStreamReader.getAttributeValue(null, "Longitude"))));
                             break;
                         case "Icon":
-                            toiletBuilder.setAddressNote(xmlStreamReader.getAttributeValue(null, "IconAltText"));
+                            builder.setAddressNote(xmlStreamReader.getAttributeValue(null, "IconAltText"));
                             break;
                     }
                     break;
@@ -43,25 +42,25 @@ public abstract class AbstractToiletStoreImpl implements ToiletStore {
                 case XMLStreamConstants.END_ELEMENT:
                     switch (xmlStreamReader.getLocalName()) {
                         case "Name":
-                            toiletBuilder.setName(tagContent);
+                            builder.setName(tagContent);
                             break;
                         case "Address1":
-                            toiletBuilder.setAddress1(tagContent);
+                            builder.setAddress1(tagContent);
                             break;
                         case "Town":
-                            toiletBuilder.setTown(tagContent);
+                            builder.setTown(tagContent);
                             break;
                         case "State":
-                            toiletBuilder.setState(tagContent);
+                            builder.setState(tagContent);
                             break;
                         case "Postcode":
-                            toiletBuilder.setPostcode(tagContent);
+                            builder.setPostcode(tagContent);
                             break;
                         case "IconURL":
-                            toiletBuilder.setIconUrl(tagContent);
+                            builder.setIconUrl(tagContent);
                             break;
                         case "ToiletDetails":
-                            add(toiletBuilder.build());
+                            add(builder.build());
                             break;
                     }
                     tagContent = "";

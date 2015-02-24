@@ -2,7 +2,6 @@ package net.example.toilets.store;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
-import net.example.toilets.model.ToiletBuilder;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
@@ -13,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,27 +26,25 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     private static final String DB_CONNECTION = "jdbc:h2:tcp://localhost/~/toiletdb";
     private static final String DB_USER = "sa";
     private static final String DB_PASSWORD = "";
+    private static final String INSERT_SQL = "insert into toilets (name, address1, town, state, postcode, " +
+            "address_note, icon_url, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String SEARCH_SQL = "select *, (" + RADIUS_OF_EARTH +
+            " * acos(cos(radians(?)) * cos(radians(latitude))" +
+            " * cos(radians(longitude ) - radians(?)) + sin(radians(?))" +
+            " * sin(radians(latitude)))) as distance" +
+            " from toilets" +
+            " group by name, address1, town, state, postcode, address_note, icon_url, latitude, longitude" +
+            " having distance <= 5" +
+            " order by distance" +
+            " limit ?";
 
     private final List<Toilet> toilets = new ArrayList<>();
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
-        String sql = new StringBuilder()
-                .append("select *, (")
-                .append(RADIUS_OF_EARTH)
-                .append(" * acos(cos(radians(?)) * cos(radians(latitude))")
-                .append(" * cos(radians(longitude ) - radians(?)) + sin(radians(?))")
-                .append(" * sin(radians(latitude)))) as distance")
-                .append(" from toilets")
-                .append(" group by name, address1, town, state, postcode, address_note, icon_url, latitude, longitude")
-                .append(" having distance <= 5")
-                .append(" order by distance")
-                .append(" limit ?")
-                .toString();
-
         Location location = query.getLocation();
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(SEARCH_SQL)) {
             ps.setDouble(1, location.getLatitude());
             ps.setDouble(2, location.getLongitude());
             ps.setDouble(3, location.getLatitude());
@@ -54,17 +52,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             ResultSet rs = ps.executeQuery();
             List<Toilet> toilets = new ArrayList<>();
             while (rs.next()) {
-                Toilet toilet = new ToiletBuilder()
-                        .setName(rs.getString(1))
-                        .setAddress1(rs.getString(2))
-                        .setTown(rs.getString(3))
-                        .setState(rs.getString(4))
-                        .setPostcode(rs.getString(5))
-                        .setAddressNote(rs.getString(6))
-                        .setIconUrl(rs.getString(7))
-                        .setLocation(new Location(rs.getDouble(8), rs.getDouble(9)))
-                        .build();
-                toilets.add((toilet));
+                toilets.add((createToilet(rs)));
             }
             return toilets;
         } catch (SQLException e) {
@@ -86,30 +74,23 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             readToiletXml(toiletXml);
             if (!toilets.isEmpty()) {
                 insertToilets();
-                toilets.clear();
             }
-        } catch (XMLStreamException | SQLException e) {
+        } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
     protected void add(Toilet toilet) {
-        if (toilets.size() % 1000 == 0) {
-            try {
-                insertToilets();
-                toilets.clear();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+        if (toilets.size() == 1000) {
+            insertToilets();
         }
         toilets.add(toilet);
     }
 
-    private void insertToilets() throws SQLException {
-        String sql = "insert into toilets (name, address1, town, state, postcode, address_note, icon_url, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    private void insertToilets() {
         try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
             for (Toilet toilet : toilets) {
                 ps.setString(1, toilet.getName());
                 ps.setString(2, toilet.getAddress1());
@@ -122,8 +103,26 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
                 ps.setDouble(9, toilet.getLocation().getLongitude());
                 ps.addBatch();
             }
-            ps.executeBatch();
+            if (Arrays.stream(ps.executeBatch()).sum() != toilets.size()) {
+                throw new IllegalStateException("Failed to insert toilets into database");
+            }
+            toilets.clear();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    private Toilet createToilet(ResultSet rs) throws SQLException {
+        return new Toilet.Builder()
+                .setName(rs.getString(1))
+                .setAddress1(rs.getString(2))
+                .setTown(rs.getString(3))
+                .setState(rs.getString(4))
+                .setPostcode(rs.getString(5))
+                .setAddressNote(rs.getString(6))
+                .setIconUrl(rs.getString(7))
+                .setLocation(new Location(rs.getDouble(8), rs.getDouble(9)))
+                .build();
     }
 
     private Connection getConnection() throws SQLException {

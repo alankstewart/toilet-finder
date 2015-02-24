@@ -6,8 +6,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.junit.Assert.assertEquals;
@@ -26,7 +29,9 @@ public class ToiletStoreTest {
     public static void onlyOnce() {
         InputStream inputStream = ToiletStoreTest.class.getResourceAsStream("/toilets.xml");
         assertNotNull(inputStream);
+        LocalDateTime start = now();
         TOILET_STORE.initialise(inputStream);
+        System.out.println("Initialised toilet store in " + Duration.between(start, now()).toMillis() + " ms");
     }
 
     @Test
