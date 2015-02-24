@@ -10,7 +10,6 @@ import com.mongodb.QueryBuilder;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
             if (!toilets.isEmpty()) {
                 addToiletsToCollection();
             }
-        } catch (UnknownHostException | XMLStreamException e) {
+        } catch (UnknownHostException e) {
             throw new RuntimeException(e);
         }
     }

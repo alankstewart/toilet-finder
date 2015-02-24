@@ -3,7 +3,6 @@ package net.example.toilets.store;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -70,13 +69,9 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             throw new RuntimeException(e);
         }
 
-        try {
-            readToiletXml(toiletXml);
-            if (!toilets.isEmpty()) {
-                insertToilets();
-            }
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
+        readToiletXml(toiletXml);
+        if (!toilets.isEmpty()) {
+            insertToilets();
         }
     }
 
