@@ -4,7 +4,6 @@ import net.example.toilets.model.Distance;
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +30,8 @@ public final class ToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public void initialise(InputStream toiletXml) {
-        try {
-            toilets.clear();
-            readToiletXml(toiletXml);
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
+        toilets.clear();
+        readToiletXml(toiletXml);
     }
 
     @Override
