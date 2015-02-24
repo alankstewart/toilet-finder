@@ -51,7 +51,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             ResultSet rs = ps.executeQuery();
             List<Toilet> toilets = new ArrayList<>();
             while (rs.next()) {
-                toilets.add((createToilet(rs)));
+                toilets.add(createToilet(rs));
             }
             return toilets;
         } catch (SQLException e) {
