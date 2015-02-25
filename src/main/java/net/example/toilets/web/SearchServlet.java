@@ -2,8 +2,6 @@ package net.example.toilets.web;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
-import net.example.toilets.store.JdbcToiletStoreImpl;
-import net.example.toilets.store.MongoToiletStoreImpl;
 import net.example.toilets.store.ToiletQuery;
 import net.example.toilets.store.ToiletStore;
 import net.example.toilets.store.ToiletStoreImpl;

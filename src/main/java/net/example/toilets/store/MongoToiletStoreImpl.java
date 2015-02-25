@@ -13,7 +13,6 @@ import net.example.toilets.model.Toilet;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.lang.String.valueOf;
@@ -33,7 +32,7 @@ import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
  */
 public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
 
-    private DBCollection coll;
+    private final DBCollection coll;
     private final List<Toilet> toilets = new ArrayList<>();
 
     public MongoToiletStoreImpl() {
