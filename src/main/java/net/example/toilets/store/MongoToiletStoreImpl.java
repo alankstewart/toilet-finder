@@ -36,12 +36,19 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
     private DBCollection coll;
     private final List<Toilet> toilets = new ArrayList<>();
 
+    public MongoToiletStoreImpl() {
+        try {
+            MongoClient mongoClient = new MongoClient();
+            coll = mongoClient.getDB("toiletdb").getCollection("toilets");
+            coll.remove(new BasicDBObject());
+            coll.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public List<Toilet> search(ToiletQuery query) {
-        if (coll == null) {
-            return Collections.<Toilet>emptyList();
-        }
-
         Location location = query.getLocation();
         return coll.find(QueryBuilder.start(KEY_LOC)
                 .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH)
@@ -52,17 +59,9 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public void initialise(InputStream toiletXml) {
-        try {
-            MongoClient mongoClient = new MongoClient();
-            coll = mongoClient.getDB("toiletdb").getCollection("toilets");
-            coll.remove(new BasicDBObject());
-            coll.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
-            readToiletXml(toiletXml);
-            if (!toilets.isEmpty()) {
-                addToiletsToCollection();
-            }
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+        readToiletXml(toiletXml);
+        if (!toilets.isEmpty()) {
+            addToiletsToCollection();
         }
     }
 

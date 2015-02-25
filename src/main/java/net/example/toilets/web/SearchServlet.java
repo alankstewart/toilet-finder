@@ -2,6 +2,8 @@ package net.example.toilets.web;
 
 import net.example.toilets.model.Location;
 import net.example.toilets.model.Toilet;
+import net.example.toilets.store.JdbcToiletStoreImpl;
+import net.example.toilets.store.MongoToiletStoreImpl;
 import net.example.toilets.store.ToiletQuery;
 import net.example.toilets.store.ToiletStore;
 import net.example.toilets.store.ToiletStoreImpl;
@@ -14,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collector;
@@ -64,8 +65,13 @@ public class SearchServlet extends HttpServlet {
         ToiletQuery query = new ToiletQuery(location, 10);
         LocalDateTime start = now();
         List<Toilet> results = store.search(query);
-        log("Search: " + query + " took " + between(start, now()).toMillis() + "ms");
-        writeJson(resp.getOutputStream(), results);
+        log("Search: " + query + " took " + between(start, now()).toMillis() + " ms");
+
+        Json.createWriter(resp.getOutputStream()).write(results.stream().map(Toilet::getJsonStructure)
+                .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
+                    left.add(right);
+                    return left;
+                })).build());
         resp.getOutputStream().flush();
     }
 
@@ -75,13 +81,5 @@ public class SearchServlet extends HttpServlet {
         } catch (NumberFormatException e) {
             throw new ServletException("Failed to parse string as double '" + str + "'");
         }
-    }
-
-    private void writeJson(OutputStream outputStream, List<Toilet> results) {
-        Json.createWriter(outputStream).write(results.stream().map(Toilet::getJsonStructure)
-                .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
-                    left.add(right);
-                    return left;
-                })).build());
     }
 }

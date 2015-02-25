@@ -39,6 +39,16 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
     private final List<Toilet> toilets = new ArrayList<>();
 
+    public JdbcToiletStoreImpl() {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate("drop table if exists toilets");
+            stmt.executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public List<Toilet> search(ToiletQuery query) {
         Location location = query.getLocation();
@@ -61,14 +71,6 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public void initialise(InputStream toiletXml) {
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("drop table if exists toilets");
-            stmt.executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
         readToiletXml(toiletXml);
         if (!toilets.isEmpty()) {
             insertToilets();
@@ -101,10 +103,10 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
             if (Arrays.stream(ps.executeBatch()).sum() != toilets.size()) {
                 throw new IllegalStateException("Failed to insert toilets into database");
             }
-            toilets.clear();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        toilets.clear();
     }
 
     private Toilet createToilet(ResultSet rs) throws SQLException {
