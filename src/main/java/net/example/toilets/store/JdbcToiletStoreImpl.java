@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
@@ -22,55 +21,52 @@ import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
  */
 public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
-    private static final String DB_CONNECTION = "jdbc:h2:tcp://localhost/~/toiletdb";
-    private static final String DB_USER = "sa";
-    private static final String DB_PASSWORD = "";
     private static final String INSERT_SQL = "insert into toilets (name, address1, town, state, postcode, " +
             "address_note, icon_url, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String SEARCH_SQL = "select *, (" + RADIUS_OF_EARTH +
-            " * acos(cos(radians(?)) * cos(radians(latitude))" +
-            " * cos(radians(longitude ) - radians(?)) + sin(radians(?))" +
-            " * sin(radians(latitude)))) as distance" +
-            " from toilets" +
-            " group by name, address1, town, state, postcode, address_note, icon_url, latitude, longitude" +
-            " having distance <= 5" +
-            " order by distance" +
-            " limit ?";
+    private static final String SEARCH_SQL = "select * " +
+            "from (select *, (" + RADIUS_OF_EARTH + " * acos(cos(radians(@lat)) * cos(radians(latitude)) * " +
+            "  cos(radians(longitude) - radians(@lng)) + sin(radians(@lat)) * sin(radians(latitude)))) as distance " +
+            "from toilets " +
+            "where latitude between @lat - (@radius / 111.1) and @lat + (@radius / 111.1) " +
+            "and longitude between @lng - (@radius / (111.1 * cos(radians(@lat)))) and " +
+            "  @lng + (@radius / (111.1 * cos(radians(@lat))))) " +
+            "group by name, address1, town, state, postcode, address_note, icon_url, latitude, longitude " +
+            "having distance <= 5 " +
+            "order by distance " +
+            "limit ?";
 
     private final List<Toilet> toilets = new ArrayList<>();
 
     public JdbcToiletStoreImpl() {
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
-            stmt.executeUpdate("drop table if exists toilets");
-            stmt.executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        executeUpdate("drop table if exists toilets");
+        executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
     }
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
+        List<Toilet> toilets = new ArrayList<>();
         Location location = query.getLocation();
         try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement();
              PreparedStatement ps = conn.prepareStatement(SEARCH_SQL)) {
-            ps.setDouble(1, location.getLatitude());
-            ps.setDouble(2, location.getLongitude());
-            ps.setDouble(3, location.getLatitude());
-            ps.setInt(4, query.getLimit());
+            stmt.addBatch("set @lat = " + location.getLatitude());
+            stmt.addBatch("set @lng = " + location.getLongitude());
+            stmt.addBatch("set @radius = 10");
+            stmt.executeBatch();
+            ps.setInt(1, query.getLimit());
             ResultSet rs = ps.executeQuery();
-            List<Toilet> toilets = new ArrayList<>();
             while (rs.next()) {
                 toilets.add(createToilet(rs));
             }
-            return toilets;
         } catch (SQLException e) {
-            return Collections.<Toilet>emptyList();
+            throw new RuntimeException(e);
         }
+        return toilets;
     }
 
     @Override
     public void initialise(InputStream toiletXml) {
+        executeUpdate("delete from toilets");
         readToiletXml(toiletXml);
         if (!toilets.isEmpty()) {
             insertToilets();
@@ -122,7 +118,16 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
                 .build();
     }
 
+    private void executeUpdate(String sql) {
+        try (Connection conn = getConnection();
+             Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+        return DriverManager.getConnection("jdbc:h2:tcp://localhost/~/toiletdb", "sa", "");
     }
 }
