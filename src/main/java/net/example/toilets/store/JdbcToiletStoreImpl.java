@@ -39,7 +39,8 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
     public JdbcToiletStoreImpl() {
         executeUpdate("drop table if exists toilets");
-        executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
+        executeUpdate("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), state varchar(100), " +
+                "postcode varchar(4), address_note varchar(255), icon_url varchar(255), latitude double, longitude double)");
     }
 
     @Override
