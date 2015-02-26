@@ -39,7 +39,6 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
         try {
             MongoClient mongoClient = new MongoClient();
             coll = mongoClient.getDB("toiletdb").getCollection("toilets");
-            coll.remove(new BasicDBObject());
             coll.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
         } catch (UnknownHostException e) {
             throw new RuntimeException(e);
@@ -58,6 +57,7 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public void initialise(InputStream toiletXml) {
+        coll.remove(new BasicDBObject());
         readToiletXml(toiletXml);
         if (!toilets.isEmpty()) {
             addToiletsToCollection();
