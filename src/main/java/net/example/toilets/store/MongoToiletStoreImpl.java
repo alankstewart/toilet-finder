@@ -51,8 +51,7 @@ public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
         return coll.find(QueryBuilder.start(KEY_LOC)
                 .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH)
                 .get()).limit(query.getLimit()).toArray()
-                .stream().map(this::createToilet)
-                .collect(toList());
+                .stream().map(this::createToilet).collect(toList());
     }
 
     @Override
