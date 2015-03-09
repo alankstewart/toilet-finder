@@ -66,7 +66,7 @@ public class Toilet {
         return iconUrl;
     }
 
-    public JsonStructure getJsonStructure() {
+    public JsonStructure toJson() {
         return Json.createObjectBuilder()
                 .add(KEY_NAME, name)
                 .add(KEY_ADDR, address1)
