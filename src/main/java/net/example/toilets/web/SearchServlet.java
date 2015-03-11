@@ -65,6 +65,8 @@ public class SearchServlet extends HttpServlet {
         List<Toilet> results = store.search(query);
         log("Search: " + query + " took " + between(start, now()).toMillis() + " ms");
 
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
         Json.createWriter(resp.getOutputStream()).write(results.stream().map(Toilet::toJson)
                 .collect(Collector.of(Json::createArrayBuilder, JsonArrayBuilder::add, (left, right) -> {
                     left.add(right);
