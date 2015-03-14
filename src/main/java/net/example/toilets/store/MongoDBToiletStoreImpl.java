@@ -30,12 +30,12 @@ import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
 /**
  * Created by alanstewart on 15/02/15.
  */
-public final class MongoToiletStoreImpl extends AbstractToiletStoreImpl {
+public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
 
     private final DBCollection coll;
     private final List<Toilet> toilets = new ArrayList<>();
 
-    public MongoToiletStoreImpl() {
+    public MongoDBToiletStoreImpl() {
         try {
             MongoClient mongoClient = new MongoClient();
             coll = mongoClient.getDB("toiletdb").getCollection("toilets");

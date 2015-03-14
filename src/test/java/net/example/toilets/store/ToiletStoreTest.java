@@ -31,7 +31,7 @@ public class ToiletStoreTest {
         assertNotNull(inputStream);
         LocalDateTime start = now();
         TOILET_STORE.initialise(inputStream);
-        System.out.println("Initialised toilet store in " + Duration.between(start, now()).toMillis() + " ms");
+        System.out.format("Initialised toilet store in %d ms\n", Duration.between(start, now()).toMillis());
     }
 
     @Test
@@ -45,11 +45,11 @@ public class ToiletStoreTest {
                 "Darling Walk",
                 "Wynyard Park",
                 "Wynyard Train Station",
+                "Town Hall House Public Toilet",
                 "Metcentre",
                 "Lang Park",
                 "Town Hall Square",
-                "Town Hall Train Station",
-                "David Jones - Castlereagh Street"));
+                "Town Hall Train Station"));
     }
 
     @Test
