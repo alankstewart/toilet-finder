@@ -16,7 +16,7 @@ import static java.lang.Double.parseDouble;
  */
 abstract class AbstractToiletStoreImpl implements ToiletStore {
 
-    protected final void readToiletXml(InputStream toiletXml) {
+    final void readToiletXml(InputStream toiletXml) {
         Toilet.Builder builder = new Toilet.Builder();
         String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
