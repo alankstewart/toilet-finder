@@ -1,7 +1,7 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
-import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Toilet;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;

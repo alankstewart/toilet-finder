@@ -1,6 +1,6 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
-import net.example.toilets.model.Toilet;
+import alankstewart.toilets.model.Toilet;
 
 import java.io.InputStream;
 import java.util.List;

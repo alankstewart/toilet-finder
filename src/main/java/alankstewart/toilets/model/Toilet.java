@@ -1,4 +1,4 @@
-package net.example.toilets.model;
+package alankstewart.toilets.model;
 
 import javax.json.Json;
 import javax.json.JsonStructure;

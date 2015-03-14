@@ -1,4 +1,4 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
@@ -7,8 +7,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
-import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Toilet;
 
 import java.io.InputStream;
 import java.net.UnknownHostException;
@@ -17,15 +17,15 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
-import static net.example.toilets.model.Toilet.KEY_ADDR;
-import static net.example.toilets.model.Toilet.KEY_ICON;
-import static net.example.toilets.model.Toilet.KEY_LOC;
-import static net.example.toilets.model.Toilet.KEY_NAME;
-import static net.example.toilets.model.Toilet.KEY_NOTE;
-import static net.example.toilets.model.Toilet.KEY_PCODE;
-import static net.example.toilets.model.Toilet.KEY_STATE;
-import static net.example.toilets.model.Toilet.KEY_TOWN;
-import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
+import static alankstewart.toilets.model.Toilet.KEY_ADDR;
+import static alankstewart.toilets.model.Toilet.KEY_ICON;
+import static alankstewart.toilets.model.Toilet.KEY_LOC;
+import static alankstewart.toilets.model.Toilet.KEY_NAME;
+import static alankstewart.toilets.model.Toilet.KEY_NOTE;
+import static alankstewart.toilets.model.Toilet.KEY_PCODE;
+import static alankstewart.toilets.model.Toilet.KEY_STATE;
+import static alankstewart.toilets.model.Toilet.KEY_TOWN;
+import static alankstewart.toilets.util.Proximity.RADIUS_OF_EARTH;
 
 /**
  * Created by alanstewart on 15/02/15.

@@ -8,7 +8,7 @@
 
     <servlet>
         <servlet-name>SearchServlet</servlet-name>
-        <servlet-class>net.example.toilets.web.SearchServlet</servlet-class>
+        <servlet-class>alankstewart.toilets.web.SearchServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 

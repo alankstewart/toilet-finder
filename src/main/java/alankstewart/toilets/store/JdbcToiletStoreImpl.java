@@ -1,7 +1,8 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
-import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.util.Proximity;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -14,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static net.example.toilets.util.Proximity.RADIUS_OF_EARTH;
-
 /**
  * Created by alanstewart on 23/02/15.
  */
@@ -24,7 +23,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     private static final String INSERT_SQL = "insert into toilets (name, address1, town, state, postcode, " +
             "address_note, icon_url, latitude, longitude) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String SEARCH_SQL = "select * " +
-            "from (select *, (" + RADIUS_OF_EARTH + " * acos(cos(radians(@lat)) * cos(radians(latitude)) * " +
+            "from (select *, (" + Proximity.RADIUS_OF_EARTH + " * acos(cos(radians(@lat)) * cos(radians(latitude)) * " +
             "  cos(radians(longitude) - radians(@lng)) + sin(radians(@lat)) * sin(radians(latitude)))) as distance " +
             "from toilets " +
             "where latitude between @lat - (@radius / 111.1) and @lat + (@radius / 111.1) " +

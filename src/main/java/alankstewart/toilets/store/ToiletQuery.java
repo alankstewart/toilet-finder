@@ -1,6 +1,6 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
-import net.example.toilets.model.Location;
+import alankstewart.toilets.model.Location;
 
 public class ToiletQuery {
 

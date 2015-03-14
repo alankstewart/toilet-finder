@@ -1,7 +1,7 @@
-package net.example.toilets.util;
+package alankstewart.toilets.util;
 
-import net.example.toilets.model.Distance;
-import net.example.toilets.model.Location;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Distance;
 
 import static java.lang.Math.toRadians;
 

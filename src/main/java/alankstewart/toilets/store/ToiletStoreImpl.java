@@ -1,15 +1,15 @@
-package net.example.toilets.store;
+package alankstewart.toilets.store;
 
-import net.example.toilets.model.Distance;
-import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
+import alankstewart.toilets.model.Distance;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Toilet;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static net.example.toilets.util.Proximity.distanceBetween;
+import static alankstewart.toilets.util.Proximity.distanceBetween;
 
 /**
  * Created by alanstewart on 6/02/15.

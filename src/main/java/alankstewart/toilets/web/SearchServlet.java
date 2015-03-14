@@ -1,10 +1,10 @@
-package net.example.toilets.web;
+package alankstewart.toilets.web;
 
-import net.example.toilets.model.Location;
-import net.example.toilets.model.Toilet;
-import net.example.toilets.store.ToiletQuery;
-import net.example.toilets.store.ToiletStore;
-import net.example.toilets.store.ToiletStoreImpl;
+import alankstewart.toilets.model.Location;
+import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.store.ToiletStore;
+import alankstewart.toilets.store.ToiletStoreImpl;
+import alankstewart.toilets.store.ToiletQuery;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
