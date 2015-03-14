@@ -2,9 +2,9 @@ package alankstewart.toilets.web;
 
 import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.store.ToiletQuery;
 import alankstewart.toilets.store.ToiletStore;
 import alankstewart.toilets.store.ToiletStoreImpl;
-import alankstewart.toilets.store.ToiletQuery;
 
 import javax.json.Json;
 import javax.json.JsonArrayBuilder;
