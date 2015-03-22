@@ -73,7 +73,7 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
 
     private void addToiletsToCollection() {
         BulkWriteOperation bulkWriteOperation = coll.initializeOrderedBulkOperation();
-        for (Toilet toilet : toilets) {
+        toilets.forEach(toilet -> {
             Location location = toilet.getLocation();
             BasicDBList coordinates = new BasicDBList();
             coordinates.put(0, location.getLongitude());
@@ -87,7 +87,7 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
                     .append(KEY_ICON, toilet.getIconUrl())
                     .append(KEY_LOC, new BasicDBObject("type", "Point").append("coordinates", coordinates));
             bulkWriteOperation.insert(dbObject);
-        }
+        });
         if (bulkWriteOperation.execute().getInsertedCount() != toilets.size()) {
             throw new IllegalStateException("Failed to add toilets to collection");
         }
