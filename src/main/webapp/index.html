@@ -12,7 +12,7 @@
                 var bounds = new google.maps.LatLngBounds();
                 geocode($(".search-query").val(), function (input, latlng) {
                     $.ajax({
-                        type: 'GET',
+                        type: "GET",
                         url: "/search",
                         data: {"lat": latlng.lat(), "lng": latlng.lng()},
                         dataType: "json",
