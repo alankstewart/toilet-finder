@@ -72,22 +72,23 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     }
 
     @Override
-    public void initialise(InputStream toiletXml) {
+    protected long storeToilets(InputStream toiletXml) {
         try (Connection conn = getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.executeUpdate("delete from toilets");
+            readToiletXml(toiletXml);
+            if (!toilets.isEmpty()) {
+                insertToilets();
+            }
+            ResultSet rs = stmt.executeQuery("select count(*) from toilets");
+            return rs.next() ? rs.getLong(1) : 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }
-
-        readToiletXml(toiletXml);
-        if (!toilets.isEmpty()) {
-            insertToilets();
         }
     }
 
     @Override
-    protected void add(Toilet toilet) {
+    protected void addToilet(Toilet toilet) {
         if (toilets.size() == 1000) {
             insertToilets();
         }

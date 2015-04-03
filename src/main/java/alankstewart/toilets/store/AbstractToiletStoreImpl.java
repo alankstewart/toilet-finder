@@ -8,13 +8,26 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 import static java.lang.Double.parseDouble;
+import static java.time.LocalDateTime.now;
 
 /**
  * Created by alanstewart on 18/02/15.
  */
 abstract class AbstractToiletStoreImpl implements ToiletStore {
+
+    private static final Logger LOGGER = Logger.getLogger(AbstractToiletStoreImpl.class.getName());
+
+    @Override
+    public void initialise(InputStream toiletXml) {
+        LocalDateTime start = now();
+        LOGGER.info("Initialized toilet store with " + storeToilets(toiletXml) + " toilets in " +
+                Duration.between(start, now()).toMillis() + " ms");
+    }
 
     final void readToiletXml(InputStream toiletXml) {
         Toilet.Builder builder = new Toilet.Builder();
@@ -61,7 +74,7 @@ abstract class AbstractToiletStoreImpl implements ToiletStore {
                                 builder.setIconUrl(tagContent);
                                 break;
                             case "ToiletDetails":
-                                add(builder.build());
+                                addToilet(builder.build());
                                 break;
                         }
                         tagContent = "";
@@ -74,5 +87,7 @@ abstract class AbstractToiletStoreImpl implements ToiletStore {
         }
     }
 
-    protected abstract void add(Toilet toilet);
+    protected abstract long storeToilets(InputStream toiletXml);
+
+    protected abstract void addToilet(Toilet toilet);
 }

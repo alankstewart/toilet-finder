@@ -1,7 +1,7 @@
 package alankstewart.toilets.util;
 
-import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Distance;
+import alankstewart.toilets.model.Location;
 
 import static java.lang.Math.toRadians;
 

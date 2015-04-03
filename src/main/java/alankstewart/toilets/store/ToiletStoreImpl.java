@@ -8,8 +8,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static alankstewart.toilets.util.Proximity.distanceBetween;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by alanstewart on 6/02/15.
@@ -29,13 +29,14 @@ public final class ToiletStoreImpl extends AbstractToiletStoreImpl {
     }
 
     @Override
-    public void initialise(InputStream toiletXml) {
+    protected long storeToilets(InputStream toiletXml) {
         toilets.clear();
         readToiletXml(toiletXml);
+        return toilets.size();
     }
 
     @Override
-    protected void add(Toilet toilet) {
+    protected void addToilet(Toilet toilet) {
         toilets.add(toilet);
     }
 }
