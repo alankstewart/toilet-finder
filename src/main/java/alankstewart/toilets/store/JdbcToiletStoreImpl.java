@@ -111,7 +111,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
                 ps.addBatch();
             }
             if (Arrays.stream(ps.executeBatch()).sum() != toilets.size()) {
-                throw new IllegalStateException("Failed to insert toilets into database");
+                throw new RuntimeException("Failed to insert toilets into database");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
