@@ -2,6 +2,7 @@ package alankstewart.toilets.store;
 
 import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.model.ToiletBuilder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.QueryBuilder;
@@ -89,7 +90,7 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
     private Toilet createToilet(Document document) {
         Document locationDocument = (Document) document.get(KEY_LOC);
         List<Double> coordinates = (List<Double>) locationDocument.get("coordinates");
-        return new Toilet.Builder()
+        return new ToiletBuilder()
                 .setName(valueOf(document.get(KEY_NAME)))
                 .setAddress1(valueOf(document.get(KEY_ADDR)))
                 .setTown(valueOf(document.get(KEY_TOWN)))

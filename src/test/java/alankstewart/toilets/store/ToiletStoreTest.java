@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class ToiletStoreTest {
 
-    private static final ToiletStore TOILET_STORE = new MongoDBToiletStoreImpl();
+    private static final ToiletStore TOILET_STORE = new ToiletStoreImpl();
 
     @BeforeClass
     public static void onlyOnce() {
@@ -57,7 +57,7 @@ public class ToiletStoreTest {
                 "Willow Park",
                 "PA James Park",
                 "Waitara Train Station",
-                "Caltex Australia",
+                "Caltex Woolworths",
                 "Wahroonga Park",
                 "Wahroonga Train Station",
                 "Wahroonga Car Park",

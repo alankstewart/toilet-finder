@@ -2,6 +2,7 @@ package alankstewart.toilets.store;
 
 import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.model.ToiletBuilder;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -30,7 +31,7 @@ abstract class AbstractToiletStoreImpl implements ToiletStore {
     }
 
     final void readToiletXml(InputStream toiletXml) {
-        Toilet.Builder builder = new Toilet.Builder();
+        ToiletBuilder builder = new ToiletBuilder();
         String tagContent = null;
         XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
         try {
@@ -41,7 +42,7 @@ abstract class AbstractToiletStoreImpl implements ToiletStore {
                     case XMLStreamConstants.START_ELEMENT:
                         switch (xmlStreamReader.getLocalName()) {
                             case "ToiletDetails":
-                                builder = new Toilet.Builder().setLocation(new Location(
+                                builder = new ToiletBuilder().setLocation(new Location(
                                         parseDouble(xmlStreamReader.getAttributeValue(null, "Latitude")),
                                         parseDouble(xmlStreamReader.getAttributeValue(null, "Longitude"))));
                                 break;

@@ -2,6 +2,7 @@ package alankstewart.toilets.store;
 
 import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Toilet;
+import alankstewart.toilets.model.ToiletBuilder;
 import alankstewart.toilets.util.Proximity;
 
 import java.io.InputStream;
@@ -120,7 +121,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     }
 
     private Toilet createToilet(ResultSet rs) throws SQLException {
-        return new Toilet.Builder()
+        return new ToiletBuilder()
                 .setName(rs.getString(1))
                 .setAddress1(rs.getString(2))
                 .setTown(rs.getString(3))

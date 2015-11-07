@@ -23,7 +23,7 @@ public class Toilet {
     private final String iconUrl;
     private final Location location;
 
-    private Toilet(String name, String address1, String town, String state, String postcode, String addressNote, Location location, String iconUrl) {
+    public Toilet(String name, String address1, String town, String state, String postcode, String addressNote, Location location, String iconUrl) {
         this.name = name;
         this.address1 = address1;
         this.town = town;
@@ -87,61 +87,5 @@ public class Toilet {
     public String toString() {
         return String.format("%s{name=%s,address1=%s,town=%s,state=%s,postcode=%s,addressNote=%s,iconUrl=%s,location=%s}",
                 getClass().getSimpleName(), name, address1, town, state, postcode, addressNote, iconUrl, location);
-    }
-
-    public static class Builder {
-
-        private String name;
-        private String address1;
-        private String town;
-        private String state;
-        private String postcode;
-        private String addressNote;
-        private Location location;
-        private String iconUrl;
-
-        public Builder setName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder setAddress1(String address1) {
-            this.address1 = address1;
-            return this;
-        }
-
-        public Builder setTown(String town) {
-            this.town = town;
-            return this;
-        }
-
-        public Builder setState(String state) {
-            this.state = state;
-            return this;
-        }
-
-        public Builder setPostcode(String postcode) {
-            this.postcode = postcode;
-            return this;
-        }
-
-        public Builder setAddressNote(String addressNote) {
-            this.addressNote = addressNote;
-            return this;
-        }
-
-        public Builder setLocation(Location location) {
-            this.location = location;
-            return this;
-        }
-
-        public Builder setIconUrl(String iconUrl) {
-            this.iconUrl = iconUrl;
-            return this;
-        }
-
-        public Toilet build() {
-            return new Toilet(name, address1, town, state, postcode, addressNote, location, iconUrl);
-        }
     }
 }
