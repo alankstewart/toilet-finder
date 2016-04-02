@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.example</groupId>
+    <groupId>alankstewart</groupId>
     <artifactId>toilets</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
@@ -36,12 +36,12 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.1.1</version>
+            <version>3.2.2</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.190</version>
+            <version>1.4.191</version>
         </dependency>
          <dependency>
             <groupId>junit</groupId>
@@ -56,7 +56,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
+                <version>3.5.1</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
@@ -66,7 +66,7 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.3.6.v20151106</version>
+                <version>9.3.8.v20160314</version>
             </plugin>
         </plugins>
     </build>

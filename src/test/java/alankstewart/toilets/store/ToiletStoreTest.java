@@ -37,14 +37,14 @@ public class ToiletStoreTest {
         assertThat(toiletNames, hasItems(
                 "Darling Harbour - Harbourside East",
                 "Darling Harbour - Harbourside West",
+                "Cockle Bay Restaurant Precinct",
                 "Darling Walk",
                 "Wynyard Park",
                 "Wynyard Train Station",
+                "InterPark",
                 "Town Hall House Public Toilet",
                 "Metcentre",
-                "Lang Park",
-                "Town Hall Square",
-                "Town Hall Train Station"));
+                "Lang Park"));
     }
 
     @Test
@@ -60,8 +60,8 @@ public class ToiletStoreTest {
                 "Caltex Woolworths",
                 "Wahroonga Park",
                 "Wahroonga Train Station",
-                "Wahroonga Car Park",
-                "BP Express Hornsby"));
+                "Westfield Hornsby",
+                "Westfield Hornsby"));
     }
 
     @Test
