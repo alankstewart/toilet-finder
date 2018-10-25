@@ -6,12 +6,7 @@ import alankstewart.toilets.model.ToiletBuilder;
 import alankstewart.toilets.util.Proximity;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +33,7 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     private final List<Toilet> toilets = new ArrayList<>();
 
     public JdbcToiletStoreImpl() {
-        try (Connection conn = getConnection();
+        try (var conn = getConnection();
              Statement stmt = conn.createStatement()) {
             stmt.addBatch("drop table if exists toilets");
             stmt.addBatch("create table toilets (name varchar(255), address1 varchar(255), town varchar(255), " +
@@ -53,16 +48,16 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     @Override
     public List<Toilet> search(ToiletQuery query) {
         List<Toilet> toilets = new ArrayList<>();
-        Location location = query.getLocation();
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement();
-             PreparedStatement ps = conn.prepareStatement(SEARCH_SQL)) {
+        var location = query.getLocation();
+        try (var conn = getConnection();
+             var stmt = conn.createStatement();
+             var ps = conn.prepareStatement(SEARCH_SQL)) {
             stmt.addBatch("set @lat = " + location.getLatitude());
             stmt.addBatch("set @lng = " + location.getLongitude());
             stmt.addBatch("set @radius = 10");
             stmt.executeBatch();
             ps.setInt(1, query.getLimit());
-            ResultSet rs = ps.executeQuery();
+            var rs = ps.executeQuery();
             while (rs.next()) {
                 toilets.add(createToilet(rs));
             }
@@ -74,14 +69,14 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     protected long storeToilets(InputStream toiletXml) {
-        try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
+        try (var conn = getConnection();
+             var stmt = conn.createStatement()) {
             stmt.executeUpdate("delete from toilets");
             readToiletXml(toiletXml);
             if (!toilets.isEmpty()) {
                 insertToilets();
             }
-            ResultSet rs = stmt.executeQuery("select count(*) from toilets");
+            var rs = stmt.executeQuery("select count(*) from toilets");
             return rs.next() ? rs.getLong(1) : 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -97,9 +92,9 @@ public final class JdbcToiletStoreImpl extends AbstractToiletStoreImpl {
     }
 
     private void insertToilets() {
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(INSERT_SQL)) {
-            for (Toilet toilet : toilets) {
+        try (var conn = getConnection();
+             var ps = conn.prepareStatement(INSERT_SQL)) {
+            for (var toilet : toilets) {
                 ps.setString(1, toilet.getName());
                 ps.setString(2, toilet.getAddress1());
                 ps.setString(3, toilet.getTown());

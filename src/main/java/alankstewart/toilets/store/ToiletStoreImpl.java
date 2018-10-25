@@ -1,11 +1,11 @@
 package alankstewart.toilets.store;
 
 import alankstewart.toilets.model.Distance;
-import alankstewart.toilets.model.Location;
 import alankstewart.toilets.model.Toilet;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static alankstewart.toilets.util.Proximity.distanceBetween;
@@ -20,10 +20,10 @@ public final class ToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
-        Location location = query.getLocation();
+        var location = query.getLocation();
         return toilets.parallelStream()
                 .filter(t -> distanceBetween(t.getLocation(), location).compareTo(Distance.kilometres(5)) <= 0)
-                .sorted((t1, t2) -> distanceBetween(t1.getLocation(), location).compareTo(distanceBetween(t2.getLocation(), location)))
+                .sorted(Comparator.comparing(t2 -> distanceBetween(t2.getLocation(), location)))
                 .limit(query.getLimit())
                 .collect(toList());
     }

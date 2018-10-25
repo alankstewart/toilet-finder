@@ -20,14 +20,14 @@ public final class Proximity {
      * but this is sufficient for our needs.
      */
     public static Distance distanceBetween(final Location pt1, final Location pt2) {
-        final double lat1 = toRadians(pt1.getLatitude());
-        final double lat2 = toRadians(pt2.getLatitude());
-        final double lon1 = toRadians(pt1.getLongitude());
-        final double lon2 = toRadians(pt2.getLongitude());
+        final var lat1 = toRadians(pt1.getLatitude());
+        final var lat2 = toRadians(pt2.getLatitude());
+        final var lon1 = toRadians(pt1.getLongitude());
+        final var lon2 = toRadians(pt2.getLongitude());
 
-        final double x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
-        final double y = lat2 - lat1;
-        final double d = Math.sqrt(x * x + y * y);
+        final var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+        final var y = lat2 - lat1;
+        final var d = Math.sqrt(x * x + y * y);
 
         return Distance.kilometres(Math.abs(d * RADIUS_OF_EARTH));
     }

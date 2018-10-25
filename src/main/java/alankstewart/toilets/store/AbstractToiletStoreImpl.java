@@ -7,10 +7,8 @@ import alankstewart.toilets.model.ToiletBuilder;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 import static java.lang.Double.parseDouble;
@@ -25,19 +23,19 @@ abstract class AbstractToiletStoreImpl implements ToiletStore {
 
     @Override
     public void initialise(InputStream toiletXml) {
-        LocalDateTime start = now();
+        var start = now();
         LOGGER.info("Initialized toilet store with " + storeToilets(toiletXml) + " toilets in " +
                 Duration.between(start, now()).toMillis() + " ms");
     }
 
     final void readToiletXml(InputStream toiletXml) {
-        ToiletBuilder builder = new ToiletBuilder();
+        var builder = new ToiletBuilder();
         String tagContent = null;
-        XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
+        var xmlInputFactory = XMLInputFactory.newFactory();
         try {
-            XMLStreamReader xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
+            var xmlStreamReader = xmlInputFactory.createXMLStreamReader(toiletXml);
             while (xmlStreamReader.hasNext()) {
-                int event = xmlStreamReader.next();
+                var event = xmlStreamReader.next();
                 switch (event) {
                     case XMLStreamConstants.START_ELEMENT:
                         switch (xmlStreamReader.getLocalName()) {

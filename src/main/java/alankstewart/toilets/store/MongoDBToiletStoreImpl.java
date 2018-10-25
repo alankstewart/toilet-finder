@@ -16,14 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import static alankstewart.toilets.model.Toilet.KEY_ADDR;
-import static alankstewart.toilets.model.Toilet.KEY_ICON;
-import static alankstewart.toilets.model.Toilet.KEY_LOC;
-import static alankstewart.toilets.model.Toilet.KEY_NAME;
-import static alankstewart.toilets.model.Toilet.KEY_NOTE;
-import static alankstewart.toilets.model.Toilet.KEY_PCODE;
-import static alankstewart.toilets.model.Toilet.KEY_STATE;
-import static alankstewart.toilets.model.Toilet.KEY_TOWN;
+import static alankstewart.toilets.model.Toilet.*;
 import static alankstewart.toilets.util.Proximity.RADIUS_OF_EARTH;
 import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
@@ -37,14 +30,14 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
     private final List<Toilet> toilets = new ArrayList<>();
 
     public MongoDBToiletStoreImpl() {
-        MongoClient mongoClient = new MongoClient();
+        var mongoClient = new MongoClient();
         collection = mongoClient.getDatabase("toiletdb").getCollection("toilets");
         collection.createIndex(new BasicDBObject(KEY_LOC, "2dsphere"));
     }
 
     @Override
     public List<Toilet> search(ToiletQuery query) {
-        Location location = query.getLocation();
+        var location = query.getLocation();
         return StreamSupport.stream(collection.find((Bson) QueryBuilder.start(KEY_LOC)
                 .nearSphere(location.getLongitude(), location.getLatitude(), 5 / RADIUS_OF_EARTH)
                 .get()).limit(query.getLimit())
@@ -59,7 +52,7 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
         if (!toilets.isEmpty()) {
             addToiletsToCollection();
         }
-        return collection.count();
+        return collection.countDocuments();
     }
 
     @Override
@@ -72,8 +65,8 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
 
     private void addToiletsToCollection() {
         collection.insertMany(toilets.stream().map(toilet -> {
-            Location location = toilet.getLocation();
-            List<Double> coordinates = Arrays.asList(location.getLongitude(), location.getLatitude());
+            var location = toilet.getLocation();
+            var coordinates = Arrays.asList(location.getLongitude(), location.getLatitude());
             return new Document(KEY_NAME, toilet.getName())
                     .append(KEY_ADDR, toilet.getAddress1())
                     .append(KEY_TOWN, toilet.getTown())
@@ -88,8 +81,8 @@ public final class MongoDBToiletStoreImpl extends AbstractToiletStoreImpl {
 
     @SuppressWarnings("unchecked")
     private Toilet createToilet(Document document) {
-        Document locationDocument = (Document) document.get(KEY_LOC);
-        List<Double> coordinates = (List<Double>) locationDocument.get("coordinates");
+        var locationDocument = (Document) document.get(KEY_LOC);
+        var coordinates = (List<Double>) locationDocument.get("coordinates");
         return new ToiletBuilder()
                 .setName(valueOf(document.get(KEY_NAME)))
                 .setAddress1(valueOf(document.get(KEY_ADDR)))
